@@ -1,2 +1,2 @@
 build:
-	gcc main.c -o bin/minsh
+	gcc main.c job.c stringarr.c parser.c -o bin/minsh

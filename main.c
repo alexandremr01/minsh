@@ -4,22 +4,13 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include "stringarr.h"
+#include "job.h"
+#include "parser.h"
 
 char* read_line();
 char **split_command(char *command);
 void initialize_job(char **argv);
-
-typedef struct job {
-    char **argv;
-    struct job *next;
-} job;
-
-job* append_job(job* current_job, char **argv){
-    job *new_job = malloc(sizeof(job));
-    new_job->argv = argv;
-    current_job->next = new_job;
-    return new_job;
-}
 
 int main(){
     printf("MINi SHell 0.1.0 by Alexandre Maranhao\n\n");
@@ -27,42 +18,15 @@ int main(){
         printf("> ");
         char *line = read_line();
         char **words = split_command(line);
-        
-        int current_word = 0;
-        int fail=0;
-        
-        job *jobs_head = malloc(sizeof(job));
-        job *current_job = jobs_head;
-        int argv_cap = 5;
-        char **argv = malloc(argv_cap*sizeof(char*));
-        int argc = 0;
-        while (words[current_word][0] != '\0'){
-            if ( strcmp(words[current_word], "|") == 0 ){
-                if (argc == 0){
-                    printf("Unexpected pipe |\n");
-                    fail = 1;
-                    break;
-                }
-                current_job = append_job(current_job, argv);
-                argv_cap = 5;
-                argv = malloc(argv_cap*sizeof(char*));
-                argc = 0;
-            } else {
-                argv[argc] = words[current_word];
-                if (argc == argv_cap - 1){
-                    argv_cap = 2*argv_cap;
-                    argv = realloc(argv, argv_cap*sizeof(char*));
-                }
-                argc++;
-            }
-            current_word++;
+
+        job *jobs_head = parse_line(words);
+        if (jobs_head == NULL) {
+            continue;
         }
-        if (fail) continue;
-        current_job = append_job(current_job, argv);
 
         job *p = jobs_head->next;
         while (p != NULL){
-            initialize_job(p->argv);  
+            initialize_job(p->args->argv);  
             p = p->next;      
         }
     }
