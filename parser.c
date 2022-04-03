@@ -13,44 +13,53 @@
 int token_type(char **words, int current_word);
 stringarr* parse_command(char **words, int *current_word);
 
+int is_terminator(int token_type){
+    return token_type==PIPE || token_type == EOL;
+}
+
 stringarr* parse_command(char **words, int *current_word){
     stringarr *args = new_stringarr();
     while (token_type(words, *current_word) == ARG) {
         stringarr_append(args, words[*current_word]);
         (*current_word)++;
     }
-    // char *next = words[*current_word];
-    // if ( strcmp(next, ">") == 0 ){
-    //     parse_out();
-    // } else if ( strcmp(next, "<") == 0 ){
-    //     parse_in();
+
+    // while ( !is_terminator(token_type(words, *current_word)) ) {
+    //     if ( token_type(words, *current_word) == REDIRECT_INPUT ){
+    //         // parse_out();
+    //     } else if ( token_type(words, *current_word) == REDIRECT_OUTPUT ){
+    //         // parse_in();
+    //     }
     // }
-    // return new_command(args);
+
     return args;
 }
 
-job* parse_line(char **words){
+job* parse(char **words){
     int current_word = 0;
-    job *jobs_head = malloc(sizeof(job));
-    job *current_job = jobs_head;
-    while (1) {
-        stringarr *command = parse_command(words, &current_word);
-        if (command->count == 0){
-            printf("Error: empty command\n");
+    return parse_line(words, &current_word);
+}
+
+job* parse_line(char **words, int *current_word){
+    stringarr *command = parse_command(words, current_word);
+    if (command->count == 0){
+        printf("Error: empty command\n");
+        return NULL;
+    }
+    job *current_job = malloc(sizeof(job));
+    current_job->args = command;
+    if (token_type(words, *current_word) == PIPE){
+        (*current_word)++;
+        job *command = parse_line(words, current_word);
+        if (command == NULL) {
             return NULL;
         }
-        current_job = append_job(current_job, command);
-        if (token_type(words, current_word) == PIPE){
-            current_word++;
-            continue;
-        } else if (token_type(words, current_word) == EOL){
-            break;
-        } else {
-            printf("Syntax error\n");
-            return NULL;
-        }
-    };
-    return jobs_head;
+        current_job->next = command;
+    } else if (token_type(words, *current_word) != EOL){
+        printf("Syntax error\n");
+        return NULL;
+    }
+    return current_job;
 }
 
 int token_type(char **words, int current_word){

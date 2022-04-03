@@ -19,12 +19,12 @@ int main(){
         char *line = read_line();
         char **words = split_command(line);
 
-        job *jobs_head = parse_line(words);
+        job *jobs_head = parse(words);
         if (jobs_head == NULL) {
             continue;
         }
 
-        job *p = jobs_head->next;
+        job *p = jobs_head;
         while (p != NULL){
             initialize_job(p->args->argv);  
             p = p->next;      
