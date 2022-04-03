@@ -9,32 +9,62 @@ char* read_command();
 char **split_command(char *command);
 void initialize_job(char **argv);
 
+typedef struct job {
+    char **argv;
+    struct job *next;
+} job;
+
+job* append_job(job* current_job, char **argv){
+    job *new_job = malloc(sizeof(job));
+    new_job->argv = argv;
+    current_job->next = new_job;
+    return new_job;
+}
+
 int main(){
+    printf("MINi SHell 0.1.0 by Alexandre Maranhao\n\n");
     while(1){
         printf("> ");
         char *command = read_command();
-        char **parts = split_command(command);
+        char **words = split_command(command);
         
-        int j = 0;
-        int cap = 5;
-        char **argv = malloc(cap*sizeof(char*));
+        int current_word = 0;
+        int fail=0;
+        
+        job *jobs_head = malloc(sizeof(job));
+        job *current_job = jobs_head;
+        int argv_cap = 5;
+        char **argv = malloc(argv_cap*sizeof(char*));
         int argc = 0;
-        for (j=0; parts[j][0] != '\0'; j++){
-            if ( strcmp(parts[j], "|") == 0 ){
-                initialize_job(argv);
-                argv = malloc(cap*sizeof(char*));
+        while (words[current_word][0] != '\0'){
+            if ( strcmp(words[current_word], "|") == 0 ){
+                if (argc == 0){
+                    printf("Unexpected pipe |\n");
+                    fail = 1;
+                    break;
+                }
+                current_job = append_job(current_job, argv);
+                argv_cap = 5;
+                argv = malloc(argv_cap*sizeof(char*));
                 argc = 0;
-                continue;
+            } else {
+                argv[argc] = words[current_word];
+                if (argc == argv_cap - 1){
+                    argv_cap = 2*argv_cap;
+                    argv = realloc(argv, argv_cap*sizeof(char*));
+                }
+                argc++;
             }
-
-            argv[argc] = parts[j];
-            if (argc == cap - 1){
-                cap = 2*cap;
-                argv = realloc(argv, cap*sizeof(char*));
-            }
-            argc++;
+            current_word++;
         }
-        initialize_job(argv);        
+        if (fail) continue;
+        current_job = append_job(current_job, argv);
+
+        job *p = jobs_head->next;
+        while (p != NULL){
+            initialize_job(p->argv);  
+            p = p->next;      
+        }
     }
     return 0;
 }
