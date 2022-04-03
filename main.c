@@ -9,7 +9,7 @@
 #include "parser.h"
 
 char* read_line();
-char **split_command(char *command);
+stringarr *split_command(char *command);
 void initialize_job(command *command);
 
 int main(){
@@ -17,7 +17,7 @@ int main(){
     while(1){
         printf("> ");
         char *line = read_line();
-        char **words = split_command(line);
+        stringarr *words = split_command(line);
 
         job *jobs_head = parse(words);
         if (jobs_head == NULL) {
@@ -68,21 +68,15 @@ void initialize_job(command *command){
     }
 }
 
-char **split_command(char *command){
-    int cap = 5;
-    char **parts = malloc(cap * sizeof(char*));
+stringarr *split_command(char *command){
+    stringarr *parts = new_stringarr();
     int i = 0;
     char *token;
     while ((token = strsep(&command, " ")) != NULL){
-        parts[i] = token;
-        if (i == cap-1){
-            cap = 2*cap;
-            command = realloc(command, cap*sizeof(char*));
-        }
-        i++;
+        if (strcmp(token, "") == 0) continue;
+        stringarr_append(parts, token);
     }
-    parts[i] = malloc(sizeof(char));
-    parts[i][0] = '\0';
+    stringarr_append(parts, "\0");
     return parts;
 }
 

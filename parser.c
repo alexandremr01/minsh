@@ -10,17 +10,17 @@
 #define EOL 4
 #define ARG 5
 
-int token_type(char **words, int current_word);
-command* parse_command(char **words, int *current_word);
+int token_type(stringarr *words, int current_word);
+command* parse_command(stringarr *words, int *current_word);
 
 int is_terminator(int token_type){
     return token_type==PIPE || token_type == EOL;
 }
 
-command* parse_command(char **words, int *current_word){
+command* parse_command(stringarr *words, int *current_word){
     stringarr *args = new_stringarr();
     while (token_type(words, *current_word) == ARG) {
-        stringarr_append(args, words[*current_word]);
+        stringarr_append(args, words->argv[*current_word]);
         (*current_word)++;
     }
 
@@ -35,12 +35,12 @@ command* parse_command(char **words, int *current_word){
     return new_command(args);
 }
 
-job* parse(char **words){
+job* parse(stringarr *words){
     int current_word = 0;
     return parse_line(words, &current_word);
 }
 
-job* parse_line(char **words, int *current_word){
+job* parse_line(stringarr *words, int *current_word){
     command *command = parse_command(words, current_word);
     if (command->args->count == 0){
         printf("Error: empty command\n");
@@ -61,8 +61,8 @@ job* parse_line(char **words, int *current_word){
     return current_job;
 }
 
-int token_type(char **words, int current_word){
-    char *next = words[current_word];
+int token_type(stringarr *words, int current_word){
+    char *next = words->argv[current_word];
     if ( strcmp(next, ">") == 0 ) return REDIRECT_OUTPUT;
     else if ( strcmp(next, "<") == 0 ) return REDIRECT_INPUT;
     else if ( strcmp(next, "|") == 0 ) return PIPE;
