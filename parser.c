@@ -11,13 +11,13 @@
 #define ARG 5
 
 int token_type(char **words, int current_word);
-stringarr* parse_command(char **words, int *current_word);
+command* parse_command(char **words, int *current_word);
 
 int is_terminator(int token_type){
     return token_type==PIPE || token_type == EOL;
 }
 
-stringarr* parse_command(char **words, int *current_word){
+command* parse_command(char **words, int *current_word){
     stringarr *args = new_stringarr();
     while (token_type(words, *current_word) == ARG) {
         stringarr_append(args, words[*current_word]);
@@ -32,7 +32,7 @@ stringarr* parse_command(char **words, int *current_word){
     //     }
     // }
 
-    return args;
+    return new_command(args);
 }
 
 job* parse(char **words){
@@ -41,13 +41,12 @@ job* parse(char **words){
 }
 
 job* parse_line(char **words, int *current_word){
-    stringarr *command = parse_command(words, current_word);
-    if (command->count == 0){
+    command *command = parse_command(words, current_word);
+    if (command->args->count == 0){
         printf("Error: empty command\n");
         return NULL;
     }
-    job *current_job = malloc(sizeof(job));
-    current_job->args = command;
+    job *current_job = new_job(command);
     if (token_type(words, *current_word) == PIPE){
         (*current_word)++;
         job *command = parse_line(words, current_word);

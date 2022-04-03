@@ -10,7 +10,7 @@
 
 char* read_line();
 char **split_command(char *command);
-void initialize_job(char **argv);
+void initialize_job(command *command);
 
 int main(){
     printf("MINi SHell 0.1.0 by Alexandre Maranhao\n\n");
@@ -26,14 +26,20 @@ int main(){
 
         job *p = jobs_head;
         while (p != NULL){
-            initialize_job(p->args->argv);  
+            if (p->next != NULL){
+                int pipefd[2];
+                pipe(pipefd);
+                p->next->command->input = pipefd[0];
+                p->command->output = pipefd[1];
+            }
+            initialize_job(p->command);  
             p = p->next;      
         }
     }
     return 0;
 }
 
-void initialize_job(char **argv){
+void initialize_job(command *command){
     pid_t cpid = fork();
     char *newenviron[] = { NULL };
 
@@ -42,12 +48,22 @@ void initialize_job(char **argv){
         exit(EXIT_FAILURE);
     }
     if (cpid == 0) {   
-        int result = execve(argv[0], argv, newenviron);
+        if (command->input != -1){
+            dup2(command->input, STDIN_FILENO);
+            close(command->input);
+        }
+        if (command->output != -1){
+            dup2(command->output, STDOUT_FILENO);
+            close(command->output);
+        }
+        int result = execve(command->args->argv[0], command->args->argv, newenviron);
         if (result == -1) {
-            printf("Could not run %s\n", argv[0]);
+            printf("Could not run %s\n", command->args->argv[0]);
             exit(EXIT_FAILURE);
         }
     } else{
+        close(command->input);
+        close(command->output);
         wait(NULL);
     }
 }
