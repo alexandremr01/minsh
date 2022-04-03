@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-char* read_command();
+char* read_line();
 char **split_command(char *command);
 void initialize_job(char **argv);
 
@@ -25,8 +25,8 @@ int main(){
     printf("MINi SHell 0.1.0 by Alexandre Maranhao\n\n");
     while(1){
         printf("> ");
-        char *command = read_command();
-        char **words = split_command(command);
+        char *line = read_line();
+        char **words = split_command(line);
         
         int current_word = 0;
         int fail=0;
@@ -106,7 +106,7 @@ char **split_command(char *command){
     return parts;
 }
 
-char* read_command() {
+char* read_line() {
     int cap = 256;
     char *command = malloc(cap);
     int i = 0;
