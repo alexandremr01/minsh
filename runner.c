@@ -7,6 +7,22 @@
 #include <unistd.h>
 #include <errno.h>
 
+int validate(job *jobs_head){
+    job *p = jobs_head;
+    while (p != NULL){
+        if (p->command->inputFile != NULL && p != jobs_head){
+            printf("Invalid input: Only the first command in a pipeline can redirect input\n");
+            return -1;
+        }
+        if (p->command->outputFile != NULL && p->next != NULL){
+            printf("Invalid input: Only the last command in a pipeline can redirect output\n");
+            return -1;
+        }
+        p = p->next;
+    }
+    return 0;
+}
+
 void run_jobs(job *jobs_head){
     job *p = jobs_head;
     while (p != NULL){

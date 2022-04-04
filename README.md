@@ -16,4 +16,16 @@ make build
 ./bin/minsh
 ```
 
+# Features
 
+- Output redirecting (>)
+- Input redirecting (<)
+- Pipelining (|)
+
+Obs: Only the first member of a pipeline can redirect input. Only the last member can redirect output.
+
+# Example input
+
+```sh
+/bin/ls | /usr/bin/sort -r | /usr/bin/tail -n 3 > outtest
+```

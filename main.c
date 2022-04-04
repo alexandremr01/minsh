@@ -22,6 +22,8 @@ int main(){
             continue;
         }
 
+        if (validate(jobs_head) != 0) continue;
+
         run_jobs(jobs_head);
     }
     return 0;
