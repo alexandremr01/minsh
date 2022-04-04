@@ -7,6 +7,7 @@
 #include "stringarr.h"
 #include "job.h"
 #include "parser.h"
+#include <fcntl.h>
 
 char* read_line();
 stringarr *split_command(char *command);
@@ -32,6 +33,23 @@ int main(){
                 p->next->command->input = pipefd[0];
                 p->command->output = pipefd[1];
             }
+            if (p->command->outputFile != NULL) {
+                int fd = open(p->command->outputFile, O_CREAT | O_RDWR, S_IRWXU | S_IRWXG| S_IRWXO);
+                if (fd == -1){
+                    printf("Could not open file %s, error %d\n", p->command->outputFile, errno);
+                    break;
+                }
+                p->command->output = fd;
+            } 
+            if (p->command->inputFile != NULL) {
+                int fd = open(p->command->inputFile, O_RDONLY);
+                if (fd == -1){
+                    printf("Could not open file %s, error %d\n", p->command->outputFile, errno);
+                    break;
+                }
+                p->command->input = fd;
+            } 
+            
             initialize_job(p->command);  
             p = p->next;      
         }

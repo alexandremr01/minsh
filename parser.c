@@ -17,6 +17,17 @@ int is_terminator(int token_type){
     return token_type==PIPE || token_type == EOL;
 }
 
+char* parse_filename(stringarr *words, int *current_word){
+    if (token_type(words, *current_word) != ARG) {
+        printf("Expected a filename\n");
+        return NULL;
+    }
+    char *input = words->argv[*current_word];
+    (*current_word)++;
+
+    return input;
+}
+
 command* parse_command(stringarr *words, int *current_word){
     stringarr *args = new_stringarr();
     while (token_type(words, *current_word) == ARG) {
@@ -24,15 +35,22 @@ command* parse_command(stringarr *words, int *current_word){
         (*current_word)++;
     }
 
-    // while ( !is_terminator(token_type(words, *current_word)) ) {
-    //     if ( token_type(words, *current_word) == REDIRECT_INPUT ){
-    //         // parse_out();
-    //     } else if ( token_type(words, *current_word) == REDIRECT_OUTPUT ){
-    //         // parse_in();
-    //     }
-    // }
+    command *cmd = new_command(args);
+    while ( !is_terminator(token_type(words, *current_word)) ) {
+        int token = token_type(words, *current_word);
+        if (token == REDIRECT_INPUT || token == REDIRECT_OUTPUT) {
+            (*current_word)++;
+            char *filename = parse_filename(words, current_word);
+            if (filename == NULL){
+                return NULL;
+            }
+            if (token == REDIRECT_INPUT)
+                cmd->inputFile = filename;
+            else cmd->outputFile = filename;
+        }
+    }
 
-    return new_command(args);
+    return cmd;
 }
 
 job* parse(stringarr *words){

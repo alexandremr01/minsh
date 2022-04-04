@@ -5,6 +5,7 @@
 typedef struct command {
     stringarr *args;
     int input, output;
+    char *inputFile, *outputFile;
 } command;
 
 typedef struct job {
