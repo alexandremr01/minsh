@@ -9,5 +9,6 @@ typedef struct stringarr{
 
 stringarr *new_stringarr();
 void stringarr_append(stringarr *s, char *str);
+stringarr *split_string(char *str, char *delimiter);
 
 #endif
