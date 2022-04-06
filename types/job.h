@@ -2,7 +2,7 @@
 #define JOB_H
 #include "stringarr.h"
 
-typedef struct command {
+typedef struct command_parameters {
     stringarr *args;
     int input, output;
     char *inputFile, *outputFile;

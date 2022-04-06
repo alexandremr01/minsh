@@ -70,9 +70,9 @@ void initialize_job(command *command){
             dup2(command->output, STDOUT_FILENO);
             close(command->output);
         }
-        int result = execve(command->args->argv[0], command->args->argv, newenviron);
+        int result = execve(command->args->values[0], command->args->values, newenviron);
         if (result == -1) {
-            printf("Could not run %s\n", command->args->argv[0]);
+            printf("Could not run %s\n", command->args->values[0]);
             exit(EXIT_FAILURE);
         }
     } else{

@@ -2,7 +2,7 @@
 #define STRING_ARR
 
 typedef struct stringarr{
-    char **argv;
+    char **values;
     int count;
     int cap;
 } stringarr;

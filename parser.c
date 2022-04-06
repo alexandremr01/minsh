@@ -22,7 +22,7 @@ char* parse_filename(stringarr *words, int *current_word){
         printf("Expected a filename\n");
         return NULL;
     }
-    char *input = words->argv[*current_word];
+    char *input = words->values[*current_word];
     (*current_word)++;
 
     return input;
@@ -31,7 +31,7 @@ char* parse_filename(stringarr *words, int *current_word){
 command* parse_command(stringarr *words, int *current_word){
     stringarr *args = new_stringarr();
     while (token_type(words, *current_word) == ARG) {
-        stringarr_append(args, words->argv[*current_word]);
+        stringarr_append(args, words->values[*current_word]);
         (*current_word)++;
     }
 
@@ -80,7 +80,7 @@ job* parse_line(stringarr *words, int *current_word){
 }
 
 int token_type(stringarr *words, int current_word){
-    char *next = words->argv[current_word];
+    char *next = words->values[current_word];
     if ( strcmp(next, ">") == 0 ) return REDIRECT_OUTPUT;
     else if ( strcmp(next, "<") == 0 ) return REDIRECT_INPUT;
     else if ( strcmp(next, "|") == 0 ) return PIPE;
