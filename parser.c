@@ -10,6 +10,7 @@
 #define EOL 4
 #define ARG 5
 
+command* parse_line(stringarr *words, int *current_word);
 int token_type(stringarr *words, int current_word);
 command* parse_command(stringarr *words, int *current_word);
 

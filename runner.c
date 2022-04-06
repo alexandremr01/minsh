@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+void initialize_command(command *command);
+
 int validate(command *commands_head){
     command *p = commands_head;
     while (p != NULL){

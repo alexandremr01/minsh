@@ -10,6 +10,7 @@ int main(){
     while(1){
         stringarr *command_line = prompt_command();
 
+        // turns the array of strings into a linked list of commands
         command *commands = parse(command_line);
         
         if (validate(commands) != 0) continue;
