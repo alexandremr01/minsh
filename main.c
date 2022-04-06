@@ -11,10 +11,7 @@ int main(){
         stringarr *command_line = prompt_command();
 
         command *commands = parse(command_line);
-        if (commands == NULL) {
-            continue;
-        }
-
+        
         if (validate(commands) != 0) continue;
 
         run_commands(commands);

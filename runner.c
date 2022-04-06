@@ -53,6 +53,7 @@ void run_commands(command *commands_head){
         p = p->next;      
     }
 }
+
 void initialize_command(command *command){
     pid_t cpid = fork();
     char *newenviron[] = { NULL };
