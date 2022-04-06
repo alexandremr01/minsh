@@ -1,5 +1,6 @@
 CC_FLAGS=-Wall -Wextra -Wundef -Wpointer-arith -Wcast-align
-INPUT_FILES=main.c runner.c job.c stringarr.c parser.c
+INPUT_FILES=main.c runner.c types/job.c types/stringarr.c parser.c
+CC=gcc
 
 build:
-	gcc $(CC_FLAGS) $(INPUT_FILES) -o bin/minsh
+	$(CC) $(CC_FLAGS) $(INPUT_FILES) -o bin/minsh

@@ -1,5 +1,5 @@
 #include "parser.h"
-#include "stringarr.h"
+#include "types/stringarr.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

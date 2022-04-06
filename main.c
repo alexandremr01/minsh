@@ -3,21 +3,20 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-#include "stringarr.h"
-#include "job.h"
+#include "types/stringarr.h"
+#include "types/job.h"
 #include "parser.h"
 #include "runner.h"
 
 char* read_line();
+stringarr *prompt_command();
 
 int main(){
     printf("MINi SHell 0.1.0 by Alexandre Maranhao\n\n");
     while(1){
-        printf("> ");
-        char *line = read_line();
-        stringarr *words = split_string(line, " ");
+        stringarr *command_line = prompt_command();
 
-        job *jobs_head = parse(words);
+        job *jobs_head = parse(command_line);
         if (jobs_head == NULL) {
             continue;
         }
@@ -27,6 +26,12 @@ int main(){
         run_jobs(jobs_head);
     }
     return 0;
+}
+
+stringarr *prompt_command(){
+    printf("> ");
+    char *line = read_line();
+    return split_string(line, " ");
 }
 
 char* read_line() {
