@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include "types/job.h"
+#include "types/command.h"
 
-job* parse(stringarr *words);
-job* parse_line(stringarr *words, int *current_word);
+command* parse(stringarr *words);
+command* parse_line(stringarr *words, int *current_word);
 #endif

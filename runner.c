@@ -7,14 +7,14 @@
 #include <unistd.h>
 #include <errno.h>
 
-int validate(job *jobs_head){
-    job *p = jobs_head;
+int validate(command *commands_head){
+    command *p = commands_head;
     while (p != NULL){
-        if (p->command->inputFile != NULL && p != jobs_head){
+        if (p->inputFile != NULL && p != commands_head){
             printf("Invalid input: Only the first command in a pipeline can redirect input\n");
             return -1;
         }
-        if (p->command->outputFile != NULL && p->next != NULL){
+        if (p->outputFile != NULL && p->next != NULL){
             printf("Invalid input: Only the last command in a pipeline can redirect output\n");
             return -1;
         }
@@ -23,37 +23,37 @@ int validate(job *jobs_head){
     return 0;
 }
 
-void run_jobs(job *jobs_head){
-    job *p = jobs_head;
+void run_commands(command *commands_head){
+    command *p = commands_head;
     while (p != NULL){
         if (p->next != NULL){
             int pipefd[2];
             pipe(pipefd);
-            p->next->command->input = pipefd[0];
-            p->command->output = pipefd[1];
+            p->next->input = pipefd[0];
+            p->output = pipefd[1];
         }
-        if (p->command->outputFile != NULL) {
-            int fd = open(p->command->outputFile, O_CREAT | O_RDWR, S_IRWXU | S_IRWXG| S_IRWXO);
+        if (p->outputFile != NULL) {
+            int fd = open(p->outputFile, O_CREAT | O_RDWR, S_IRWXU | S_IRWXG| S_IRWXO);
             if (fd == -1){
-                printf("Could not open file %s, error %d\n", p->command->outputFile, errno);
+                printf("Could not open file %s, error %d\n", p->outputFile, errno);
                 break;
             }
-            p->command->output = fd;
+            p->output = fd;
         } 
-        if (p->command->inputFile != NULL) {
-            int fd = open(p->command->inputFile, O_RDONLY);
+        if (p->inputFile != NULL) {
+            int fd = open(p->inputFile, O_RDONLY);
             if (fd == -1){
-                printf("Could not open file %s, error %d\n", p->command->outputFile, errno);
+                printf("Could not open file %s, error %d\n", p->outputFile, errno);
                 break;
             }
-            p->command->input = fd;
+            p->input = fd;
         } 
         
-        initialize_job(p->command);  
+        initialize_command(p);  
         p = p->next;      
     }
 }
-void initialize_job(command *command){
+void initialize_command(command *command){
     pid_t cpid = fork();
     char *newenviron[] = { NULL };
 

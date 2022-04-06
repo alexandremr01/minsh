@@ -53,30 +53,29 @@ command* parse_command(stringarr *words, int *current_word){
     return cmd;
 }
 
-job* parse(stringarr *words){
+command* parse(stringarr *words){
     int current_word = 0;
     return parse_line(words, &current_word);
 }
 
-job* parse_line(stringarr *words, int *current_word){
-    command *command = parse_command(words, current_word);
-    if (command->args->count == 0){
+command* parse_line(stringarr *words, int *current_word){
+    command *cmd = parse_command(words, current_word);
+    if (cmd->args->count == 0){
         printf("Error: empty command\n");
         return NULL;
     }
-    job *current_job = new_job(command);
     if (token_type(words, *current_word) == PIPE){
         (*current_word)++;
-        job *command = parse_line(words, current_word);
-        if (command == NULL) {
+        command *next_cmd = parse_line(words, current_word);
+        if (next_cmd == NULL) {
             return NULL;
         }
-        current_job->next = command;
+        cmd->next = next_cmd;
     } else if (token_type(words, *current_word) != EOL){
         printf("Syntax error\n");
         return NULL;
     }
-    return current_job;
+    return cmd;
 }
 
 int token_type(stringarr *words, int current_word){

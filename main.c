@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "types/stringarr.h"
-#include "types/job.h"
+#include "types/command.h"
 #include "parser.h"
 #include "runner.h"
 #include "interactive.h"
@@ -10,14 +10,14 @@ int main(){
     while(1){
         stringarr *command_line = prompt_command();
 
-        job *jobs_head = parse(command_line);
-        if (jobs_head == NULL) {
+        command *commands = parse(command_line);
+        if (commands == NULL) {
             continue;
         }
 
-        if (validate(jobs_head) != 0) continue;
+        if (validate(commands) != 0) continue;
 
-        run_jobs(jobs_head);
+        run_commands(commands);
     }
     return 0;
 }

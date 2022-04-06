@@ -1,9 +1,9 @@
 #ifndef RUNNER_H
 #define RUNNER_H
-#include "types/job.h"
+#include "types/command.h"
 
-void initialize_job(command *command);
-void run_jobs(job *jobs_head);
-int validate(job *jobs_head);
+void initialize_command(command *command);
+void run_commands(command *command_head);
+int validate(command *command_head);
 
 #endif
