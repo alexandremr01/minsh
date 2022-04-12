@@ -1,6 +1,7 @@
 #include "stringarr.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 stringarr *new_stringarr(){
     stringarr *s = malloc(sizeof(stringarr*));
@@ -27,5 +28,9 @@ stringarr *split_string(char *str, char *delimiter){
         stringarr_append(parts, token);
     }
     stringarr_append(parts, "\0");
+
+//    for (int i=0;i<parts->count;i++){
+//        printf("String %d: %s\n", i, parts->values[i]);
+//    }
     return parts;
 }

@@ -85,5 +85,6 @@ int token_type(stringarr *words, int current_word){
     else if ( strcmp(next, "<") == 0 ) return REDIRECT_INPUT;
     else if ( strcmp(next, "|") == 0 ) return PIPE;
     else if ( strcmp(next, "\0") == 0) return EOL;
-    else return ARG;
+    else if ( strcmp(next, "\n") == 0) return EOL;
+    return ARG;
 }

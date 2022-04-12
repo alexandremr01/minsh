@@ -12,5 +12,8 @@ command* new_command(stringarr *str){
     new_command->args = str;
     new_command->input = -1;
     new_command->output = -1;
+    new_command->outputFile = NULL;
+    new_command->inputFile = NULL;
+    new_command->next = NULL;
     return new_command;
 }

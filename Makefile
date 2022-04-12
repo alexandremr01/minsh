@@ -3,4 +3,4 @@ INPUT_FILES=main.c interactive.c runner.c types/command.c types/stringarr.c pars
 CC=gcc
 
 build:
-	$(CC) $(CC_FLAGS) $(INPUT_FILES) -o bin/minsh
+	$(CC) $(CC_FLAGS) $(INPUT_FILES) -lreadline -g -o bin/minsh
