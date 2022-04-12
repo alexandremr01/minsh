@@ -75,7 +75,7 @@ void initialize_command(command *command){
         }
         int result = execve(command->args->values[0], command->args->values, newenviron);
         if (result == -1) {
-            printf("Could not run %s\n", command->args->values[0]);
+            printf("Could not run %s: error %d\n", command->args->values[0], errno);
             exit(EXIT_FAILURE);
         }
     } else{

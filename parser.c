@@ -51,6 +51,8 @@ command* parse_command(stringarr *words, int *current_word){
         }
     }
 
+    stringarr_append(cmd->args, NULL);
+
     return cmd;
 }
 
