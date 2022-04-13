@@ -12,10 +12,13 @@ int main(){
 
         // turns the array of strings into a linked list of commands
         command *commands = parse(command_line);
-        
+        stringarr_free(command_line);
+
         if (validate(commands) != 0) continue;
 
         run_commands(commands);
+
+        free_commands(commands);
     }
     return 0;
 }

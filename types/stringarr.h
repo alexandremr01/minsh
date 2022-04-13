@@ -10,5 +10,7 @@ typedef struct stringarr{
 stringarr *new_stringarr();
 void stringarr_append(stringarr *s, char *str);
 stringarr *split_string(char *str, char *delimiter);
+void stringarr_free(stringarr *s);
+char *stringarr_get_copy(stringarr *s, int i);
 
 #endif

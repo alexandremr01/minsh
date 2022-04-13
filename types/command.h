@@ -11,5 +11,6 @@ typedef struct command {
 
 command* append_command(command* current_command, stringarr *args);
 command* new_command(stringarr *str);
+void free_commands(command *cmd);
 
 #endif

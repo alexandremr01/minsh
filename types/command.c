@@ -17,3 +17,13 @@ command* new_command(stringarr *str){
     new_command->next = NULL;
     return new_command;
 }
+
+void free_commands(command *cmd){
+    command *p = cmd;
+    while(p!=NULL){
+        command *q = p;
+        p = p->next;
+        stringarr_free(q->args);
+        free(q);
+    }
+}
