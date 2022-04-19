@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-void initialize_command(command *command);
+int initialize_command(command *command);
 
 int validate(command *commands_head){
     command *p = commands_head;
@@ -51,12 +51,16 @@ void run_commands(command *commands_head){
             p->input = fd;
         } 
         
-        initialize_command(p);  
+        int result = initialize_command(p);
+        if (result != 0) {
+            if(p->next != NULL && p->next->input != -1) close(p->next->input);
+            return;
+        }
         p = p->next;      
     }
 }
 
-void initialize_command(command *command){
+int initialize_command(command *command){
     pid_t cpid = fork();
     char *newenviron[] = { NULL };
 
@@ -64,7 +68,8 @@ void initialize_command(command *command){
         perror("fork");
         exit(EXIT_FAILURE);
     }
-    if (cpid == 0) {   
+    if (cpid == 0) {
+        int std_output = dup(STDOUT_FILENO);
         if (command->input != -1){
             dup2(command->input, STDIN_FILENO);
             close(command->input);
@@ -75,12 +80,19 @@ void initialize_command(command *command){
         }
         int result = execve(command->args->values[0], command->args->values, newenviron);
         if (result == -1) {
-            printf("Could not run %s: error %d\n", command->args->values[0], errno);
+            int error = errno;
+            dup2(std_output, STDOUT_FILENO);
+            printf("Could not run %s: error %d\n", command->args->values[0], error);
             exit(EXIT_FAILURE);
         }
     } else{
         close(command->input);
         close(command->output);
-        wait(NULL);
+        int child_status;
+        wait(&child_status);
+        if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
+            return -1;
+        }
     }
+    return 0;
 }
