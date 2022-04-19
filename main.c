@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "types/stringarr.h"
 #include "types/command.h"
-#include "parser.h"
+#include "parser/parser.h"
 #include "runner.h"
 #include "interactive.h"
 
