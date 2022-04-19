@@ -19,16 +19,17 @@ void stringarr_append(stringarr *s, char *str){
     s->count++;
     if (s->count == s->cap - 1){
         s->cap = 2*s->cap;
-        s->values = realloc(s->values, s->cap*sizeof(char));
+        s->values = realloc(s->values, s->cap*sizeof(char*));
     }
 }
 
 stringarr *split_string(char *str, char *delimiter){
     stringarr *parts = new_stringarr();
-    char *token;
-    while ((token = strsep(&str, delimiter)) != NULL){
+    char *token = strtok(str, delimiter);
+    while (token != NULL){
         if (strcmp(token, "") == 0) continue;
         stringarr_append(parts, copy(token));
+        token = strtok(NULL, delimiter);
     }
     return parts;
 }
@@ -42,9 +43,10 @@ void stringarr_free(stringarr *s){
 
 char* copy(char* src) {
     chararr *ca = newchararr();
-    for(unsigned int j=0; j <= strlen(src); j++) {
+    for(unsigned int j=0; j < strlen(src); j++) {
         chararr_append(ca, src[j]);
     }
+    chararr_append(ca, '\0');
     char *result = ca->str;
     free(ca);
     return result;

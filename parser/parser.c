@@ -29,6 +29,7 @@ command* parse_line(lexer *lex){
             return NULL;
         }
         cmd->next = next_cmd;
+        return cmd;
     } else if (tok == EOL) {
         return cmd;
     }
@@ -51,11 +52,11 @@ char* parse_filename(lexer *lex){
 command* parse_command(lexer *lex){
     stringarr *args = new_stringarr();
     while (lex_current_token(lex) == ARG) {
-        stringarr_append(args, lex_get_string(lex));
+        char *s = lex_get_string(lex);
+        stringarr_append(args, s);
         lex_next_token(lex);
     }
     stringarr_append(args, NULL);
-
 
     command *cmd = new_command(args);
     while ( !is_terminator(lex_current_token(lex))) {

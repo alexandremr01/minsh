@@ -29,3 +29,9 @@ Obs: Only the first member of a pipeline can redirect input. Only the last membe
 ```sh
 /bin/ls | /usr/bin/sort -r | /usr/bin/tail -n 3 > outtest
 ```
+
+# Automated end-to-end testing
+
+```shell
+./test/test-1.sh
+```
