@@ -1,10 +1,8 @@
-#include "stringarr.h"
-#include "chararr.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-char *copy(char* src);
+#include "stringarr.h"
 
 stringarr *new_stringarr(){
     stringarr *s = malloc(sizeof(stringarr));
@@ -28,7 +26,9 @@ stringarr *split_string(char *str, char *delimiter){
     char *token = strtok(str, delimiter);
     while (token != NULL){
         if (strcmp(token, "") == 0) continue;
-        stringarr_append(parts, copy(token));
+        char *cpy = malloc((strlen(token)+1) * sizeof(char));
+        strcpy(cpy, token);
+        stringarr_append(parts, cpy);
         token = strtok(NULL, delimiter);
     }
     return parts;
@@ -41,19 +41,10 @@ void stringarr_free(stringarr *s){
     free(s);
 }
 
-char* copy(char* src) {
-    chararr *ca = newchararr();
-    for(unsigned int j=0; j < strlen(src); j++) {
-        chararr_append(ca, src[j]);
-    }
-    chararr_append(ca, '\0');
-    char *result = ca->str;
-    free(ca);
-    return result;
-}
-
 char* stringarr_get_copy(stringarr *s, int i){
     if(i >= s->count) return NULL;
-    return copy(s->values[i]);
+    char *cpy = malloc((strlen(s->values[i])+1) * sizeof(char));
+    strcpy(cpy, s->values[i]);
+    return cpy;
 }
 

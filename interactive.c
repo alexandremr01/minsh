@@ -16,7 +16,7 @@ stringarr *prompt_command(){
     char *line = readline("> ");
     if (line == NULL)
         return NULL;
-    add_history (line);
+    add_history(line);
     return split_string(line, " ");
 }
 

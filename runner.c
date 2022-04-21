@@ -44,7 +44,7 @@ void execute_commands(command *commands_head){
                 break;
             }
             p->output = fd;
-        } 
+        }
         if (p->inputFile != NULL) {
             int fd = open(p->inputFile, O_RDONLY);
             if (fd == -1){
@@ -52,14 +52,14 @@ void execute_commands(command *commands_head){
                 break;
             }
             p->input = fd;
-        } 
-        
+        }
+
         int result = execute(p);
         if (result != 0) {
             if(p->next != NULL && p->next->input != -1) close(p->next->input);
             return;
         }
-        p = p->next;      
+        p = p->next;
     }
 }
 
@@ -93,10 +93,9 @@ int execute(command *command){
         close(command->output);
         int child_status;
         wait(&child_status);
-        if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
-            return -1;
-        }
         current_foreground_process = -1;
+        if (WEXITSTATUS(child_status) == EXIT_FAILURE)
+            return -1;
     }
     return 0;
 }

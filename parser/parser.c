@@ -14,7 +14,9 @@ command* parse(stringarr *words){
     if (words->count == 0)
         return NULL;
     lexer *lex = new_lexer(words);
-    return parse_line(lex);
+    command* parsed_commands = parse_line(lex);
+    free(lex);
+    return parsed_commands;
 }
 
 command* parse_line(lexer *lex){
