@@ -1,7 +1,4 @@
 #include "lexer.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 lexer* new_lexer(stringarr *words){
     lexer *lex = malloc(sizeof(lexer));

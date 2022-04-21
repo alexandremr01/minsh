@@ -17,7 +17,9 @@ stringarr *prompt_command(){
     if (line == NULL)
         return NULL;
     add_history(line);
-    return split_string(line, " ");
+    stringarr *words = split_string(line, " ");
+    free(line);
+    return words;
 }
 
 void signal_dispatcher (int signum) {

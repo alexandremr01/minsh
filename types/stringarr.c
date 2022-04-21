@@ -1,7 +1,3 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "stringarr.h"
 
 stringarr *new_stringarr(){

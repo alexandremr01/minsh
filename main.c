@@ -31,6 +31,6 @@ int main(){
         stringarr_free(command_line);
         free_commands(commands);
     }
-    
+
     return 0;
 }

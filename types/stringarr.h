@@ -1,6 +1,10 @@
 #ifndef STRING_ARR
 #define STRING_ARR
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 typedef struct stringarr{
     char **values;
     int count;

@@ -1,5 +1,9 @@
 #ifndef LEXER_H
 #define LEXER_H
+
+#include <stdlib.h>
+#include <string.h>
+
 #include "../types/command.h"
 
 #define REDIRECT_OUTPUT 1

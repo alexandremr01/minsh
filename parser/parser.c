@@ -1,10 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "parser.h"
-#include "../types/stringarr.h"
-#include "lexer.h"
 
 command* parse_line(lexer *lex);
 command* parse_command(lexer *lex);

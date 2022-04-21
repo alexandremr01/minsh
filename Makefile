@@ -4,7 +4,7 @@ LDFLAGS  := -lreadline
 BUILD    := ./bin
 
 SRC  := main.c interactive.c runner.c \
-        types/command.c types/stringarr.c types/chararr.c \
+        types/command.c types/stringarr.c \
         parser/parser.c parser/lexer.c
 
 .PHONY: all build clean debug release info
@@ -15,7 +15,7 @@ build:
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(SRC) $(LDFLAGS) -o $(BUILD)/minsh
 
-debug: CFLAGS += -DDEBUG -g
+debug: CFLAGS += -DDEBUG -g -fsanitize=address
 debug: all
 
 release: CFLAGS += -O2

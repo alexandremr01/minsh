@@ -1,5 +1,4 @@
 #include "command.h"
-#include <stdlib.h>
 
 command* append_command(command* current_command, stringarr *args){
     command *cmd = new_command(args);
@@ -24,6 +23,10 @@ void free_commands(command *cmd){
         command *q = p;
         p = p->next;
         stringarr_free(q->args);
+        if (q->inputFile != NULL)
+            free(q->inputFile);
+        if (q->outputFile != NULL)
+            free(q->outputFile);
         free(q);
     }
 }

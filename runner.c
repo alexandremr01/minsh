@@ -33,7 +33,11 @@ void execute_commands(command *commands_head){
     while (p != NULL){
         if (p->next != NULL){
             int pipefd[2];
-            pipe(pipefd);
+            int result = pipe(pipefd);
+            if (result == -1){
+                printf("Could not create pipeline, error %d\n", errno);
+                break;
+            }
             p->next->input = pipefd[0];
             p->output = pipefd[1];
         }

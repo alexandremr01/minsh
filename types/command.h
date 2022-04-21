@@ -1,5 +1,8 @@
 #ifndef COMMAND_H
 #define COMMAND_H
+
+#include <stdlib.h>
+
 #include "stringarr.h"
 
 typedef struct command {
