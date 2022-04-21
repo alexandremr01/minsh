@@ -1,9 +1,25 @@
-CC_FLAGS=-Wall -Wextra -Wundef -Wpointer-arith -Wcast-align
-INPUT_FILES=main.c interactive.c runner.c \
-    types/command.c types/stringarr.c types/chararr.c \
-    parser/parser.c parser/lexer.c
+CC       := gcc
+CFLAGS   := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align -pedantic -std=c11 -Werror=vla
+LDFLAGS  := -lreadline
+BUILD    := ./bin
 
-CC=gcc
+SRC  := main.c interactive.c runner.c \
+        types/command.c types/stringarr.c types/chararr.c \
+        parser/parser.c parser/lexer.c
+
+.PHONY: all build clean debug release info
+
+all: build
 
 build:
-	$(CC) $(CC_FLAGS) $(INPUT_FILES) -lreadline -g -o bin/minsh
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(SRC) $(LDFLAGS) -o $(BUILD)/minsh
+
+debug: CFLAGS += -DDEBUG -g
+debug: all
+
+release: CFLAGS += -O2
+release: all
+
+clean:
+	-@rm -rvf $(BUILD)/*
