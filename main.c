@@ -23,7 +23,7 @@ int main(){
             continue;
 
         // execution
-        run_commands(commands);
+        execute_commands(commands);
 
         // deallocate memory
         stringarr_free(command_line);

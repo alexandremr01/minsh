@@ -10,7 +10,7 @@
 
 extern pid_t current_foreground_process;
 
-int initialize_command(command *command);
+int execute(command *command);
 
 int validate(command *commands_head){
     command *p = commands_head;
@@ -28,7 +28,7 @@ int validate(command *commands_head){
     return 0;
 }
 
-void run_commands(command *commands_head){
+void execute_commands(command *commands_head){
     command *p = commands_head;
     while (p != NULL){
         if (p->next != NULL){
@@ -54,7 +54,7 @@ void run_commands(command *commands_head){
             p->input = fd;
         } 
         
-        int result = initialize_command(p);
+        int result = execute(p);
         if (result != 0) {
             if(p->next != NULL && p->next->input != -1) close(p->next->input);
             return;
@@ -63,7 +63,7 @@ void run_commands(command *commands_head){
     }
 }
 
-int initialize_command(command *command){
+int execute(command *command){
     pid_t cpid = fork();
     char *newenviron[] = { NULL };
 
