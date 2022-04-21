@@ -1,5 +1,5 @@
 CC       := gcc
-CFLAGS   := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align -pedantic -std=c11 -Werror=vla
+CFLAGS   := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align -pedantic -std=c11 -D_XOPEN_SOURCE=500 -Werror=vla
 LDFLAGS  := -lreadline
 BUILD    := ./bin
 

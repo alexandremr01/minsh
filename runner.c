@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+extern pid_t current_foreground_process;
+
 int initialize_command(command *command);
 
 int validate(command *commands_head){
@@ -65,11 +67,10 @@ int initialize_command(command *command){
     pid_t cpid = fork();
     char *newenviron[] = { NULL };
 
-    if (cpid == -1) {
+    if (cpid == -1) { // fork error
         perror("fork");
         exit(EXIT_FAILURE);
-    }
-    if (cpid == 0) {
+    } else if (cpid == 0) { // child process
         int std_output = dup(STDOUT_FILENO);
         if (command->input != -1){
             dup2(command->input, STDIN_FILENO);
@@ -86,7 +87,8 @@ int initialize_command(command *command){
             printf("Could not run %s: error %d\n", command->args->values[0], error);
             exit(EXIT_FAILURE);
         }
-    } else{
+    } else { // parent process
+        current_foreground_process = cpid;
         close(command->input);
         close(command->output);
         int child_status;
