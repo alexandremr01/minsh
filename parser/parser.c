@@ -11,6 +11,8 @@ command* parse_command(lexer *lex);
 int is_terminator(int token_type);
 
 command* parse(stringarr *words){
+    if (words->count == 0)
+        return NULL;
     lexer *lex = new_lexer(words);
     return parse_line(lex);
 }

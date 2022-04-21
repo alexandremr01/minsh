@@ -96,6 +96,7 @@ int initialize_command(command *command){
         if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
             return -1;
         }
+        current_foreground_process = -1;
     }
     return 0;
 }
