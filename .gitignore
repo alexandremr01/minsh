@@ -52,5 +52,6 @@ Mkfile.old
 dkms.conf
 
 bin
+.idea
 tmp
 test/*.output.txt

@@ -12,7 +12,7 @@ SRC  := main.c interactive.c runner.c \
 all: build
 
 build:
-	@mkdir -p $(@D)
+	@mkdir -p $(BUILD)
 	$(CC) $(CFLAGS) $(SRC) $(LDFLAGS) -o $(BUILD)/minsh
 
 debug: CFLAGS += -DDEBUG -g -fsanitize=address
