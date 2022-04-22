@@ -13,7 +13,7 @@ typedef struct command {
 } command;
 
 command* append_command(command* current_command, stringarr *args);
-command* new_command(stringarr *str);
+command* new_command();
 void free_commands(command *cmd);
 
 #endif

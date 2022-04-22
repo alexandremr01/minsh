@@ -15,7 +15,7 @@ int execute(command *command);
 int validate(command *commands_head){
     command *p = commands_head;
     while (p != NULL){
-        if (p->inputFile != NULL && p != commands_head){
+        if (p->inputFile != NULL && p != commands_head->next){
             printf("Invalid input: Only the first command in a pipeline can redirect input\n");
             return -1;
         }
@@ -29,7 +29,7 @@ int validate(command *commands_head){
 }
 
 void execute_commands(command *commands_head){
-    command *p = commands_head;
+    command *p = commands_head->next;
     while (p != NULL){
         if (p->next != NULL){
             int pipefd[2];

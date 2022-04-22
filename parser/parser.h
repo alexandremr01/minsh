@@ -8,7 +8,6 @@
 #include "../types/stringarr.h"
 #include "lexer.h"
 
-// parse takes a string array and returns a linked list of commands
-command* parse(stringarr *words);
+int parse(command* head, stringarr *words);
 
 #endif

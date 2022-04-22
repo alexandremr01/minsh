@@ -16,7 +16,8 @@ stringarr *prompt_command(){
     char *line = readline("> ");
     if (line == NULL)
         return NULL;
-    add_history(line);
+    if (strcmp(line, "") != 0)
+        add_history(line);
     stringarr *words = split_string(line, " ");
     free(line);
     return words;

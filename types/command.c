@@ -6,9 +6,9 @@ command* append_command(command* current_command, stringarr *args){
     return cmd;
 }
 
-command* new_command(stringarr *str){
+command* new_command(){
     command *new_command = malloc(sizeof(command));
-    new_command->args = str;
+    new_command->args = NULL;
     new_command->input = -1;
     new_command->output = -1;
     new_command->outputFile = NULL;
@@ -22,7 +22,8 @@ void free_commands(command *cmd){
     while(p!=NULL){
         command *q = p;
         p = p->next;
-        stringarr_free(q->args);
+        if (q->args != NULL)
+            stringarr_free(q->args);
         if (q->inputFile != NULL)
             free(q->inputFile);
         if (q->outputFile != NULL)
