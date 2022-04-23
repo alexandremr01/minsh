@@ -3,7 +3,7 @@ CFLAGS   := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align -pedantic -std=c1
 LDFLAGS  := -lreadline
 BUILD    := ./bin
 
-SRC  := main.c interactive.c runner.c \
+SRC  := main.c interactive/interactive.c runner/runner.c \
         types/command.c types/stringarr.c \
         parser/parser.c parser/lexer.c
 

@@ -3,9 +3,9 @@
 #include "types/stringarr.h"
 #include "types/command.h"
 
-#include "interactive.h"
+#include "interactive/interactive.h"
 #include "parser/parser.h"
-#include "runner.h"
+#include "runner/runner.h"
 
 void deallocate(stringarr *command_line, command *commands_head) {
     stringarr_free(command_line);
