@@ -1,10 +1,12 @@
 #include "parser.h"
 
-int parse_line(command* target, lexer *lex);
+int parse_line(command *target, lexer *lex);
+
 int is_terminator(int token_type);
+
 int parse_command(command *cmd, lexer *lex);
 
-int parse(command* head, stringarr *words){
+int parse(command *head, stringarr *words) {
     if (words->count == 0)
         return 0;
 
@@ -18,7 +20,7 @@ int parse(command* head, stringarr *words){
     return 0;
 }
 
-int parse_line(command* target, lexer *lex){
+int parse_line(command *target, lexer *lex) {
     int result = parse_command(target, lex);
     if (result == -1)
         return -1;
@@ -44,7 +46,7 @@ int parse_line(command* target, lexer *lex){
     return -1;
 }
 
-char* parse_filename(lexer *lex){
+char *parse_filename(lexer *lex) {
     if (lex_current_token(lex) != ARG) {
         printf("Expected a filename\n");
         return NULL;
@@ -55,22 +57,22 @@ char* parse_filename(lexer *lex){
     return input;
 }
 
-int parse_command(command *cmd, lexer *lex){
+int parse_command(command *cmd, lexer *lex) {
     stringarr *args = new_stringarr();
     char *inputFile = NULL, *outputFile = NULL;
-    while ( !is_terminator(lex_current_token(lex)) ) {
+    while (!is_terminator(lex_current_token(lex))) {
         int token = lex_current_token(lex);
         if (token == REDIRECT_INPUT || token == REDIRECT_OUTPUT) {
             lex_next_token(lex);
             char *filename = parse_filename(lex);
-            if (filename == NULL){
+            if (filename == NULL) {
                 stringarr_free(args);
                 return -1;
             }
             if (token == REDIRECT_INPUT)
                 inputFile = filename;
             else outputFile = filename;
-        } else if (token == ARG){
+        } else if (token == ARG) {
             char *arg = lex_get_string(lex);
             stringarr_append(args, arg);
             lex_next_token(lex);
@@ -85,6 +87,6 @@ int parse_command(command *cmd, lexer *lex){
     return 0;
 }
 
-int is_terminator(int token_type){
+int is_terminator(int token_type) {
     return token_type == PIPE || token_type == EOL;
 }

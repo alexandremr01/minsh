@@ -12,14 +12,14 @@ extern pid_t current_foreground_process;
 
 int execute(command *command);
 
-int validate(command *commands_head){
+int validate(command *commands_head) {
     command *p = commands_head;
-    while (p != NULL){
-        if (p->inputFile != NULL && p != commands_head->next){
+    while (p != NULL) {
+        if (p->inputFile != NULL && p != commands_head->next) {
             printf("Invalid input: Only the first command in a pipeline can redirect input\n");
             return -1;
         }
-        if (p->outputFile != NULL && p->next != NULL){
+        if (p->outputFile != NULL && p->next != NULL) {
             printf("Invalid input: Only the last command in a pipeline can redirect output\n");
             return -1;
         }
@@ -28,13 +28,13 @@ int validate(command *commands_head){
     return 0;
 }
 
-void execute_commands(command *commands_head){
+void execute_commands(command *commands_head) {
     command *p = commands_head->next;
-    while (p != NULL){
-        if (p->next != NULL){
+    while (p != NULL) {
+        if (p->next != NULL) {
             int pipefd[2];
             int result = pipe(pipefd);
-            if (result == -1){
+            if (result == -1) {
                 printf("Could not create pipeline, error %d\n", errno);
                 break;
             }
@@ -42,8 +42,8 @@ void execute_commands(command *commands_head){
             p->output = pipefd[1];
         }
         if (p->outputFile != NULL) {
-            int fd = open(p->outputFile, O_CREAT | O_RDWR, S_IRWXU | S_IRWXG| S_IRWXO);
-            if (fd == -1){
+            int fd = open(p->outputFile, O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+            if (fd == -1) {
                 printf("Could not open file %s, error %d\n", p->outputFile, errno);
                 break;
             }
@@ -51,7 +51,7 @@ void execute_commands(command *commands_head){
         }
         if (p->inputFile != NULL) {
             int fd = open(p->inputFile, O_RDONLY);
-            if (fd == -1){
+            if (fd == -1) {
                 printf("Could not open file %s, error %d\n", p->outputFile, errno);
                 break;
             }
@@ -60,27 +60,27 @@ void execute_commands(command *commands_head){
 
         int result = execute(p);
         if (result != 0) {
-            if(p->next != NULL && p->next->input != -1) close(p->next->input);
+            if (p->next != NULL && p->next->input != -1) close(p->next->input);
             return;
         }
         p = p->next;
     }
 }
 
-int execute(command *command){
+int execute(command *command) {
     pid_t cpid = fork();
-    char *newenviron[] = { NULL };
+    char *newenviron[] = {NULL};
 
     if (cpid == -1) { // fork error
         perror("fork");
         exit(EXIT_FAILURE);
     } else if (cpid == 0) { // child process
         int std_output = dup(STDOUT_FILENO);
-        if (command->input != -1){
+        if (command->input != -1) {
             dup2(command->input, STDIN_FILENO);
             close(command->input);
         }
-        if (command->output != -1){
+        if (command->output != -1) {
             dup2(command->output, STDOUT_FILENO);
             close(command->output);
         }

@@ -17,10 +17,12 @@ typedef struct lexer {
     stringarr *words;
 } lexer;
 
-lexer* new_lexer(stringarr *words);
+lexer *new_lexer(stringarr *words);
 
 int lex_current_token(lexer *lex);
+
 void lex_next_token(lexer *lex);
-char* lex_get_string(lexer *lex);
+
+char *lex_get_string(lexer *lex);
 
 #endif

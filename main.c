@@ -24,13 +24,8 @@ int main(){
         command *commands_head = new_command();
         // uses the array of strings to fill a linked list of commands
         int result = parse(commands_head, command_line);
-        // syntax validation
-        if (result != 0) {
-            deallocate(command_line, commands_head);
-            continue;
-        }
-        // semantic validation
-        if (validate(commands_head) != 0) {
+        // syntax and semantic validation
+        if (result != 0 || validate(commands_head) != 0) {
             deallocate(command_line, commands_head);
             continue;
         }

@@ -8,6 +8,6 @@
 #include "../types/stringarr.h"
 #include "lexer.h"
 
-int parse(command* head, stringarr *words);
+int parse(command *head, stringarr *words);
 
 #endif

@@ -1,5 +1,6 @@
 #ifndef RUNNER_H
 #define RUNNER_H
+
 #include "types/command.h"
 
 // execute_commands takes a linked list of commands and executes each of then

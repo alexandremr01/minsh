@@ -12,8 +12,8 @@ typedef struct command {
     struct command *next;
 } command;
 
-command* append_command(command* current_command, stringarr *args);
-command* new_command();
+command *new_command();
+
 void free_commands(command *cmd);
 
 #endif

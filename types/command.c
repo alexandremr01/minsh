@@ -1,12 +1,6 @@
 #include "command.h"
 
-command* append_command(command* current_command, stringarr *args){
-    command *cmd = new_command(args);
-    current_command->next = cmd;
-    return cmd;
-}
-
-command* new_command(){
+command *new_command() {
     command *new_command = malloc(sizeof(command));
     new_command->args = NULL;
     new_command->input = -1;
@@ -17,9 +11,9 @@ command* new_command(){
     return new_command;
 }
 
-void free_commands(command *cmd){
+void free_commands(command *cmd) {
     command *p = cmd;
-    while(p!=NULL){
+    while (p != NULL) {
         command *q = p;
         p = p->next;
         if (q->args != NULL)

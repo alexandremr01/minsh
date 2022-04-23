@@ -13,13 +13,11 @@ Obs: Only the first member of a pipeline can redirect input. Only the last membe
 
 # Preparing the environement
 
-If you are not running in a Linux environment, it is recommended to use `docker`.
-
-Run with `docker compose run main`.
+A docker container with the necessary dependencies can be run with `docker compose run main`.
 
 # Building and Running
 
-Build with `make build`. Run with `./bin/minsh`.
+Build with `make build`, `make debug` or `make release`. Run with `./bin/minsh`.
 
 # Example inputs
 
@@ -27,8 +25,8 @@ Build with `make build`. Run with `./bin/minsh`.
 /bin/ls | /usr/bin/sort -r | /usr/bin/tail -n 3 > outtest
 ```
 
-# Automated end-to-end testing
+# Testing
 
-```shell
-./test/test-1.sh
-```
+Running the script `./test/test-1.sh` will run the minishell with a prepared input and compare the result generated to test-1.output.txt with the test-1.exepected.txt. 
+
+Empty script output means success (real output matches expected).

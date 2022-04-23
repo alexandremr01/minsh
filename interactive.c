@@ -12,7 +12,7 @@
 
 pid_t current_foreground_process = -1;
 
-stringarr *prompt_command(){
+stringarr *prompt_command() {
     char *line = readline("> ");
     if (line == NULL)
         return NULL;
@@ -23,7 +23,8 @@ stringarr *prompt_command(){
     return words;
 }
 
-void signal_dispatcher (int signum) {
+// signal_dispatcher sends a signal to the child foreground process, if it exists
+void signal_dispatcher(int signum) {
     if (current_foreground_process == -1)
         exit(0);
     kill(current_foreground_process, signum);
@@ -32,6 +33,6 @@ void signal_dispatcher (int signum) {
 void init_shell() {
     printf(WELCOME_MESSAGE);
     using_history();
-    if (signal (SIGINT, signal_dispatcher) == SIG_IGN)
-        signal (SIGINT, SIG_IGN);
+    if (signal(SIGINT, signal_dispatcher) == SIG_IGN)
+        signal(SIGINT, SIG_IGN);
 }
