@@ -27,6 +27,7 @@ stringarr *prompt_command() {
 void signal_dispatcher(int signum) {
     if (current_foreground_process == -1)
         exit(0);
+    current_foreground_process = -1;
     kill(current_foreground_process, signum);
 }
 
@@ -35,4 +36,6 @@ void init_shell() {
     using_history();
     if (signal(SIGINT, signal_dispatcher) == SIG_IGN)
         signal(SIGINT, SIG_IGN);
+    if (signal(SIGTSTP, signal_dispatcher) == SIG_IGN)
+        signal(SIGTSTP, SIG_IGN);
 }

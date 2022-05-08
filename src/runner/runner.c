@@ -75,6 +75,10 @@ int execute(command *command) {
         perror("fork");
         exit(EXIT_FAILURE);
     } else if (cpid == 0) { // child process
+        // return to default signal handlers
+        signal(SIGINT, SIG_DFL);
+        signal(SIGTSTP, SIG_DFL);
+
         int std_output = dup(STDOUT_FILENO);
         if (command->input != -1) {
             dup2(command->input, STDIN_FILENO);
