@@ -5,15 +5,15 @@
 
 #include "stringarr.h"
 
-typedef struct command {
+typedef struct program {
     stringarr *args;
     int input, output;
     char *inputFile, *outputFile;
-    struct command *next;
-} command;
+    struct program *next;
+} program;
 
-command *new_command();
+program *new_program();
 
-void free_commands(command *cmd);
+void free_programs(program *prg);
 
 #endif

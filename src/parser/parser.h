@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "../types/command.h"
+#include "../types/program.h"
 #include "../types/stringarr.h"
 #include "lexer.h"
 
-int parse(command *head, stringarr *words);
+int parse(program *head, stringarr *words);
 
 #endif

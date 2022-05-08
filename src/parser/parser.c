@@ -1,17 +1,17 @@
 #include "parser.h"
 
-int parse_line(command *target, lexer *lex);
+int parse_line(program *target, lexer *lex);
 
 int is_terminator(int token_type);
 
-int parse_command(command *cmd, lexer *lex);
+int parse_program(program *prg, lexer *lex);
 
-int parse(command *head, stringarr *words) {
+int parse(program *head, stringarr *words) {
     if (words->count == 0)
         return 0;
 
     lexer *lex = new_lexer(words);
-    head->next = new_command();
+    head->next = new_program();
     int result = parse_line(head->next, lex);
     free(lex);
 
@@ -20,8 +20,8 @@ int parse(command *head, stringarr *words) {
     return 0;
 }
 
-int parse_line(command *target, lexer *lex) {
-    int result = parse_command(target, lex);
+int parse_line(program *target, lexer *lex) {
+    int result = parse_program(target, lex);
     if (result == -1)
         return -1;
     if (target->args->count == 1) {
@@ -32,7 +32,7 @@ int parse_line(command *target, lexer *lex) {
     int tok = lex_current_token(lex);
     lex_next_token(lex);
     if (tok == PIPE) {
-        target->next = new_command();
+        target->next = new_program();
         int result = parse_line(target->next, lex);
         if (result == -1) {
             return -1;
@@ -57,7 +57,7 @@ char *parse_filename(lexer *lex) {
     return input;
 }
 
-int parse_command(command *cmd, lexer *lex) {
+int parse_program(program *prg, lexer *lex) {
     stringarr *args = new_stringarr();
     char *inputFile = NULL, *outputFile = NULL;
     while (!is_terminator(lex_current_token(lex))) {
@@ -80,9 +80,9 @@ int parse_command(command *cmd, lexer *lex) {
     }
     stringarr_append(args, NULL);
 
-    cmd->args = args;
-    cmd->inputFile = inputFile;
-    cmd->outputFile = outputFile;
+    prg->args = args;
+    prg->inputFile = inputFile;
+    prg->outputFile = outputFile;
 
     return 0;
 }

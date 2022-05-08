@@ -6,7 +6,7 @@ BUILD     := ./bin
 SOURCEDIR := $(CURDIR)/src
 
 SOURCEFILES  := main.c interactive/interactive.c runner/runner.c \
-        		types/command.c types/stringarr.c \
+        		types/program.c types/stringarr.c \
         		parser/parser.c parser/lexer.c
 
 SRC :=  $(foreach file, $(SOURCEFILES), $(addprefix $(SOURCEDIR)/, $(file)))

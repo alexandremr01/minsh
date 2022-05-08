@@ -1,15 +1,15 @@
 #include <stdlib.h>
 
 #include "types/stringarr.h"
-#include "types/command.h"
+#include "types/program.h"
 
 #include "interactive/interactive.h"
 #include "parser/parser.h"
 #include "runner/runner.h"
 
-void deallocate(stringarr *command_line, command *commands_head) {
+void deallocate(stringarr *command_line, program *programs_head) {
     stringarr_free(command_line);
-    free_commands(commands_head);
+    free_programs(programs_head);
 }
 
 int main(){
@@ -21,20 +21,20 @@ int main(){
         if (command_line == NULL)
             break;
 
-        command *commands_head = new_command();
-        // uses the array of strings to fill a linked list of commands
-        int result = parse(commands_head, command_line);
+        program *programs_head = new_program();
+        // uses the array of strings to fill a linked list of programs
+        int result = parse(programs_head, command_line);
         // syntax and semantic validation
-        if (result != 0 || validate(commands_head) != 0) {
-            deallocate(command_line, commands_head);
+        if (result != 0 || validate(programs_head) != 0) {
+            deallocate(command_line, programs_head);
             continue;
         }
 
         // execution
-        execute_commands(commands_head);
+        execute_programs(programs_head);
 
         // deallocate memory
-        deallocate(command_line, commands_head);
+        deallocate(command_line, programs_head);
     }
 
     return 0;

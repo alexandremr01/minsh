@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../types/command.h"
+#include "../types/program.h"
 
 #define REDIRECT_OUTPUT 1
 #define REDIRECT_INPUT 2

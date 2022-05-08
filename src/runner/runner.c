@@ -14,17 +14,17 @@ extern pid_t current_foreground_process;
 extern pid_t my_pid;
 extern struct termios shell_tmodes;
 
-int execute(command *command);
+int execute(program *program);
 
-int validate(command *commands_head) {
-    command *p = commands_head;
+int validate(program *programs_head) {
+    program *p = programs_head;
     while (p != NULL) {
-        if (p->inputFile != NULL && p != commands_head->next) {
-            printf("Invalid input: Only the first command in a pipeline can redirect input\n");
+        if (p->inputFile != NULL && p != programs_head->next) {
+            printf("Invalid input: Only the first program in a pipeline can redirect input\n");
             return -1;
         }
         if (p->outputFile != NULL && p->next != NULL) {
-            printf("Invalid input: Only the last command in a pipeline can redirect output\n");
+            printf("Invalid input: Only the last program in a pipeline can redirect output\n");
             return -1;
         }
         p = p->next;
@@ -32,8 +32,8 @@ int validate(command *commands_head) {
     return 0;
 }
 
-void execute_commands(command *commands_head) {
-    command *p = commands_head->next;
+void execute_programs(program *programs_head) {
+    program *p = programs_head->next;
     while (p != NULL) {
         if (p->next != NULL) {
             int pipefd[2];
@@ -71,7 +71,7 @@ void execute_commands(command *commands_head) {
     }
 }
 
-int execute(command *command) {
+int execute(program *program) {
     pid_t cpid = fork();
     char *newenviron[] = {NULL};
 
@@ -92,27 +92,27 @@ int execute(command *command) {
         tcsetpgrp (STDIN_FILENO, pid);
 
         int std_output = dup(STDOUT_FILENO);
-        if (command->input != -1) {
-            dup2(command->input, STDIN_FILENO);
-            close(command->input);
+        if (program->input != -1) {
+            dup2(program->input, STDIN_FILENO);
+            close(program->input);
         }
-        if (command->output != -1) {
-            dup2(command->output, STDOUT_FILENO);
-            close(command->output);
+        if (program->output != -1) {
+            dup2(program->output, STDOUT_FILENO);
+            close(program->output);
         }
-        int result = execve(command->args->values[0], command->args->values, newenviron);
+        int result = execve(program->args->values[0], program->args->values, newenviron);
         if (result == -1) {
             int error = errno;
             dup2(std_output, STDOUT_FILENO);
-            printf("Could not run %s: error %d\n", command->args->values[0], error);
+            printf("Could not run %s: error %d\n", program->args->values[0], error);
             exit(EXIT_FAILURE);
         }
     } else { // parent process
         current_foreground_process = cpid;
         setpgid(cpid, cpid);
         tcsetpgrp(STDIN_FILENO, cpid);
-        if (command->input != -1) close(command->input);
-        if (command->output != -1) close(command->output);
+        if (program->input != -1) close(program->input);
+        if (program->output != -1) close(program->output);
 
         int child_status;
         waitpid(cpid, &child_status, WUNTRACED);
