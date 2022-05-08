@@ -10,7 +10,6 @@
 #include <termios.h>
 #include <signal.h>
 
-extern pid_t current_foreground_process;
 extern pid_t my_pid;
 extern struct termios shell_tmodes;
 
@@ -108,7 +107,7 @@ int execute(program *program) {
             exit(EXIT_FAILURE);
         }
     } else { // parent process
-        current_foreground_process = cpid;
+
         setpgid(cpid, cpid);
         tcsetpgrp(STDIN_FILENO, cpid);
         if (program->input != -1) close(program->input);
@@ -116,7 +115,6 @@ int execute(program *program) {
 
         int child_status;
         waitpid(cpid, &child_status, WUNTRACED);
-        current_foreground_process = -1;
         int mypid = getpid();
         tcsetpgrp(STDIN_FILENO, mypid);
         tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
