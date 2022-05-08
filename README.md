@@ -13,11 +13,11 @@ Obs: Only the first member of a pipeline can redirect input. Only the last membe
 
 # Preparing the environement
 
-A docker container with the necessary dependencies can be run with `docker compose run main`.
+A docker container with the necessary dependencies can be run with `docker compose run main`. Docker server v20.10.14 was used during development.
 
 # Building and Running
 
-Build with `make build`, `make debug` or `make release`. Run with `./bin/minsh`.
+Build with `make debug` or `make release`. Run with `./bin/minsh`.
 
 # Example inputs
 

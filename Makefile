@@ -1,11 +1,15 @@
-CC       := gcc
-CFLAGS   := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align -pedantic -std=c11 -D_XOPEN_SOURCE=500 -Werror=vla
-LDFLAGS  := -lreadline
-BUILD    := ./bin
+CC        := gcc
+CFLAGS    := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align -pedantic -std=c11 -D_XOPEN_SOURCE=500 -Werror=vla
+LDFLAGS   := -lreadline
+BUILD     := ./bin
 
-SRC  := main.c interactive/interactive.c runner/runner.c \
-        types/command.c types/stringarr.c \
-        parser/parser.c parser/lexer.c
+SOURCEDIR := $(CURDIR)/src
+
+SOURCEFILES  := main.c interactive/interactive.c runner/runner.c \
+        		types/command.c types/stringarr.c \
+        		parser/parser.c parser/lexer.c
+
+SRC :=  $(foreach file, $(SOURCEFILES), $(addprefix $(SOURCEDIR)/, $(file)))
 
 .PHONY: all build clean debug release info
 
