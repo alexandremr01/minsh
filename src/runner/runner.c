@@ -7,8 +7,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <termios.h>
+#include <signal.h>
 
 extern pid_t current_foreground_process;
+extern pid_t my_pid;
+extern struct termios shell_tmodes;
 
 int execute(command *command);
 
@@ -78,6 +82,14 @@ int execute(command *command) {
         // return to default signal handlers
         signal(SIGINT, SIG_DFL);
         signal(SIGTSTP, SIG_DFL);
+        signal(SIGTTOU, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+        signal(SIGTTIN, SIG_DFL);
+        signal(SIGCHLD, SIG_DFL);
+
+        int pid = getpid();
+        setpgid(pid, pid);
+        tcsetpgrp (STDIN_FILENO, pid);
 
         int std_output = dup(STDOUT_FILENO);
         if (command->input != -1) {
@@ -97,11 +109,18 @@ int execute(command *command) {
         }
     } else { // parent process
         current_foreground_process = cpid;
-        close(command->input);
-        close(command->output);
+        setpgid(cpid, cpid);
+        tcsetpgrp(STDIN_FILENO, cpid);
+        if (command->input != -1) close(command->input);
+        if (command->output != -1) close(command->output);
+
         int child_status;
-        wait(&child_status);
+        waitpid(cpid, &child_status, WUNTRACED);
         current_foreground_process = -1;
+        int mypid = getpid();
+        tcsetpgrp(STDIN_FILENO, mypid);
+        tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
+
         if (WEXITSTATUS(child_status) == EXIT_FAILURE)
             return -1;
     }
