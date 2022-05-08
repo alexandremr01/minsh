@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "types/stringarr.h"
 #include "types/program.h"
@@ -6,6 +7,7 @@
 #include "interactive/interactive.h"
 #include "parser/parser.h"
 #include "runner/runner.h"
+#include "internal/internal.h"
 
 void deallocate(stringarr *command_line, program *programs_head) {
     stringarr_free(command_line);
@@ -20,6 +22,11 @@ int main(){
         // in the case of an EOL
         if (command_line == NULL)
             break;
+
+        if(is_internal_command(command_line)){
+            execute_internal_command(command_line);
+            continue;
+        }
 
         program *programs_head = new_program();
         // uses the array of strings to fill a linked list of programs

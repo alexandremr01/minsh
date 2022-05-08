@@ -7,7 +7,7 @@ SOURCEDIR := $(CURDIR)/src
 
 SOURCEFILES  := main.c interactive/interactive.c runner/runner.c \
         		types/program.c types/stringarr.c \
-        		parser/parser.c parser/lexer.c
+        		parser/parser.c parser/lexer.c internal/internal.c
 
 SRC :=  $(foreach file, $(SOURCEFILES), $(addprefix $(SOURCEDIR)/, $(file)))
 
