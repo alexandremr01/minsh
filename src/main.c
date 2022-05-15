@@ -46,7 +46,7 @@ int main(){
         // deallocate memory
 //        deallocate(command_line, j);
 
-//        validate_running_programs(j);
+        validate_running_programs(jobs);
     }
 
     return 0;

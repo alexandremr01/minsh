@@ -160,3 +160,26 @@ int execute(program *program, pid_t *pgid, int foreground) {
     }
     return 0;
 }
+
+void finish(job *jobs, pid_t pid) {
+    printf("Process %d ended \n", pid);
+    // TODO: find process
+}
+
+void validate_running_programs(job *jobs){
+    int cont = 1;
+    while (cont){
+        int status;
+        pid_t pid = waitpid (-1, &status, WUNTRACED|WNOHANG);
+        int err = errno;
+        if (pid == -1 && err == ECHILD) break;
+        if (pid == 0) break;
+        else if (pid == -1) {
+            printf("Could not check children: err %d", err);
+            return;
+        }
+
+        if (WIFEXITED(status)) { finish(jobs, pid); }
+    }
+}
+

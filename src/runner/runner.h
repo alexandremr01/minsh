@@ -10,4 +10,6 @@ void execute_programs(job *jobs, job *j);
 // validate takes a linked list of programs and check for semantic errors
 int validate(job *j);
 
+void validate_running_programs(job *jobs);
+
 #endif
