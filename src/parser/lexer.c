@@ -15,6 +15,7 @@ int lex_current_token(lexer *lex) {
     if (strcmp(next, ">") == 0) return REDIRECT_OUTPUT;
     else if (strcmp(next, "<") == 0) return REDIRECT_INPUT;
     else if (strcmp(next, "|") == 0) return PIPE;
+    else if (strcmp(next, "&") == 0) return COMMERCIAL_AND;
     return ARG;
 }
 

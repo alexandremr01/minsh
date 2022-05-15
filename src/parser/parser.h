@@ -7,7 +7,8 @@
 #include "../types/program.h"
 #include "../types/stringarr.h"
 #include "lexer.h"
+#include "../types/job.h"
 
-int parse(program *head, stringarr *words);
+job* parse(stringarr *words);
 
 #endif

@@ -11,6 +11,7 @@
 #define PIPE 3
 #define EOL 4
 #define ARG 5
+#define COMMERCIAL_AND 6
 
 typedef struct lexer {
     int current_word;

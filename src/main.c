@@ -8,6 +8,7 @@
 #include "parser/parser.h"
 #include "runner/runner.h"
 #include "internal/internal.h"
+#include "types/job.h"
 
 void deallocate(stringarr *command_line, program *programs_head) {
     stringarr_free(command_line);
@@ -30,15 +31,15 @@ int main(){
 
         program *programs_head = new_program();
         // uses the array of strings to fill a linked list of programs
-        int result = parse(programs_head, command_line);
+        job *j = parse(command_line);
         // syntax and semantic validation
-        if (result != 0 || validate(programs_head) != 0) {
+        if (j == NULL || validate(programs_head) != 0) {
             deallocate(command_line, programs_head);
             continue;
         }
 
         // execution
-        execute_programs(programs_head);
+        execute_programs(j);
 
         // deallocate memory
         deallocate(command_line, programs_head);
