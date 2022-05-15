@@ -13,7 +13,7 @@
 extern pid_t my_pid;
 extern struct termios shell_tmodes;
 
-int execute(program *program);
+int execute(program *program, pid_t *pgid);
 
 int validate(program *programs_head) {
     program *p = programs_head;
@@ -31,8 +31,20 @@ int validate(program *programs_head) {
     return 0;
 }
 
+int job_is_running(program *programs_head){
+    program *p = programs_head->next;
+    while (p != NULL){
+//        printf("Seeing %d, %d\n", p->pid, p->status);
+        if (p->status == RUNNING)
+            return 1;
+        p = p->next;
+    }
+    return 0;
+}
+
 void execute_programs(program *programs_head) {
     program *p = programs_head->next;
+    int pgid = -1;
     while (p != NULL) {
         if (p->next != NULL) {
             int pipefd[2];
@@ -61,16 +73,34 @@ void execute_programs(program *programs_head) {
             p->input = fd;
         }
 
-        int result = execute(p);
+        int result = execute(p, &pgid);
         if (result != 0) {
             if (p->next != NULL && p->next->input != -1) close(p->next->input);
             return;
         }
         p = p->next;
     }
+
+    int child_status;
+    while (job_is_running(programs_head)) {
+        pid_t finished_pid = waitpid(-1, &child_status, WUNTRACED);
+        if (finished_pid == -1 && errno == ECHILD) continue;
+        program *p = programs_head->next;
+        while (p!=NULL) {
+            if (p->pid == finished_pid)
+                break;
+            p = p->next;
+        }
+        if (p == NULL) continue;
+        p->status = FINISHED;
+    }
+
+    int mypid = getpid();
+    tcsetpgrp(STDIN_FILENO, mypid);
+    tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
 }
 
-int execute(program *program) {
+int execute(program *program, pid_t *pgid) {
     pid_t cpid = fork();
     char *newenviron[] = {NULL};
 
@@ -86,9 +116,11 @@ int execute(program *program) {
         signal(SIGTTIN, SIG_DFL);
         signal(SIGCHLD, SIG_DFL);
 
-        int pid = getpid();
-        setpgid(pid, pid);
-        tcsetpgrp (STDIN_FILENO, pid);
+        pid_t pid = getpid();
+        if (*pgid == -1)
+            *pgid = pid;
+        setpgid(*pgid, pid);
+        tcsetpgrp (STDIN_FILENO, *pgid);
 
         int std_output = dup(STDOUT_FILENO);
         if (program->input != -1) {
@@ -107,20 +139,15 @@ int execute(program *program) {
             exit(EXIT_FAILURE);
         }
     } else { // parent process
+        program->status = RUNNING;
+        program->pid = cpid;
+        if (*pgid == -1)
+            *pgid = cpid;
+        setpgid(*pgid, cpid);
+        tcsetpgrp (STDIN_FILENO, *pgid);
 
-        setpgid(cpid, cpid);
-        tcsetpgrp(STDIN_FILENO, cpid);
         if (program->input != -1) close(program->input);
         if (program->output != -1) close(program->output);
-
-        int child_status;
-        waitpid(cpid, &child_status, WUNTRACED);
-        int mypid = getpid();
-        tcsetpgrp(STDIN_FILENO, mypid);
-        tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
-
-        if (WEXITSTATUS(child_status) == EXIT_FAILURE)
-            return -1;
     }
     return 0;
 }

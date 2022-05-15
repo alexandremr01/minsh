@@ -33,7 +33,6 @@ void init_shell() {
     signal(SIGTTOU, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGTTIN, SIG_IGN);
-    signal(SIGCHLD, SIG_IGN);
 
     // save terminal modes
     tcgetattr(STDIN_FILENO, &shell_tmodes);

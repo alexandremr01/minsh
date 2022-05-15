@@ -14,7 +14,7 @@ int get_internal_command_index(stringarr *command_line){
     int index = -1;
     if (command_line->count == 0)
         return -1;
-    
+
     for (int i = 0; internal_commands[i] != NULL; i++){
         if (strcmp(command_line->values[0], internal_commands[i]) == 0) {
             return i;
