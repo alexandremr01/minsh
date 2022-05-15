@@ -42,7 +42,7 @@ int job_is_running(program *programs_head){
     return 0;
 }
 
-void execute_programs(job *j) {
+void execute_programs(job *jobs, job *j) {
     program *p = j->program_head->next;
     int foreground = j->foreground;
     int pgid = -1;
@@ -100,6 +100,9 @@ void execute_programs(job *j) {
         int mypid = getpid();
         tcsetpgrp(STDIN_FILENO, mypid);
         tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
+    } else {
+        j->next = jobs->next;
+        jobs->next = j;
     }
 
 }

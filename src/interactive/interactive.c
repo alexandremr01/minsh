@@ -44,3 +44,14 @@ void init_shell() {
         exit (1);
     }
 }
+
+void display_jobs(job *jobs){
+    printf("Current jobs\n");
+    int k = 0;
+    for (job *j = jobs->next; j; j = j->next, k++) {
+        printf("[%d]: ", k);
+        for (int i=0; i<j->command_line->count; i++)
+            printf("%s ", j->command_line->values[i]);
+        printf("\n");
+    }
+}

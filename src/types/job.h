@@ -7,6 +7,7 @@
 
 typedef struct job {
     struct program *program_head;
+    stringarr *command_line;
 
     int foreground;
     pid_t gpid;

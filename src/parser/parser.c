@@ -9,6 +9,7 @@ int parse_program(program *prg, lexer *lex);
 job* parse(stringarr *words) {
     program *head = new_program();
     job *j = new_job(head, 1);
+    j->command_line = words;
     if (words->count == 0)
         return j;
 
