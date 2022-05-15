@@ -15,10 +15,10 @@ extern struct termios shell_tmodes;
 
 int execute(program *program, pid_t *pgid, int foreground);
 
-int validate(program *programs_head) {
-    program *p = programs_head;
+int validate(job *j) {
+    program *p = j->program_head;
     while (p != NULL) {
-        if (p->inputFile != NULL && p != programs_head->next) {
+        if (p->inputFile != NULL && p != j->program_head->next) {
             printf("Invalid input: Only the first program in a pipeline can redirect input\n");
             return -1;
         }

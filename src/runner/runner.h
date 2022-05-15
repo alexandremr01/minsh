@@ -8,6 +8,6 @@
 void execute_programs(job *j);
 
 // validate takes a linked list of programs and check for semantic errors
-int validate(program *program_head);
+int validate(job *j);
 
 #endif

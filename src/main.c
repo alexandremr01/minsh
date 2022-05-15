@@ -10,9 +10,9 @@
 #include "internal/internal.h"
 #include "types/job.h"
 
-void deallocate(stringarr *command_line, program *programs_head) {
+void deallocate(stringarr *command_line, job *j) {
     stringarr_free(command_line);
-    free_programs(programs_head);
+    free_jobs(j);
 }
 
 int main(){
@@ -29,12 +29,11 @@ int main(){
             continue;
         }
 
-        program *programs_head = new_program();
         // uses the array of strings to fill a linked list of programs
         job *j = parse(command_line);
         // syntax and semantic validation
-        if (j == NULL || validate(programs_head) != 0) {
-            deallocate(command_line, programs_head);
+        if (j == NULL || validate(j) != 0) {
+            deallocate(command_line, j);
             continue;
         }
 
@@ -42,7 +41,7 @@ int main(){
         execute_programs(j);
 
         // deallocate memory
-        deallocate(command_line, programs_head);
+        deallocate(command_line, j);
     }
 
     return 0;
