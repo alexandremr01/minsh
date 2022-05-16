@@ -38,6 +38,16 @@ int job_has_finished(job *job){
     return 1;
 }
 
+int job_has_stopped(job *job){
+    program *p = job->program_head->next;
+    while (p != NULL){
+        if (p->status != STOPPED)
+            return 0;
+        p = p->next;
+    }
+    return 1;
+}
+
 int job_is_running(job *job){
     program *p = job->program_head->next;
     while (p != NULL){

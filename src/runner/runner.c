@@ -41,7 +41,7 @@ void wait_for_job(job *jobs, job *j){
             p = p->next;
         }
         if (p == NULL) continue;
-        if (WIFSTOPPED(child_status)) p->status = STOPPED;
+        if (WIFSTOPPED(child_status)) { p->status = STOPPED; }
         if (WIFEXITED(child_status)) p->status = FINISHED;
     }
 
@@ -56,6 +56,8 @@ void wait_for_job(job *jobs, job *j){
             }
         }
         free_jobs(j);
+    } else if(job_has_stopped(j)) {
+        j->status = STOPPED;
     }
 }
 
@@ -98,6 +100,7 @@ void execute_programs(job *jobs, job *j) {
         p = p->next;
     }
 
+    j->status = RUNNING;
     j->next = jobs->next;
     jobs->next = j;
 
@@ -212,6 +215,7 @@ void resume_job(job *jobs, int foreground){
     if (j == NULL) {
         printf("No job to resume\n");
     }
+    j->status = RUNNING;
     for (program *p = j->program_head->next; p; p = p->next){
         kill(p->pid, SIGCONT);
         p->status = RUNNING;

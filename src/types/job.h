@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "stringarr.h"
+#include "status.h"
 
 typedef struct job {
     struct program *program_head;
@@ -13,6 +14,7 @@ typedef struct job {
     pid_t gpid;
 
     struct job *next;
+    program_status status;
 } job;
 
 job *new_job(struct program *program_head, int foreground);
@@ -24,5 +26,7 @@ job *new_job_head();
 int job_has_finished(job *job);
 
 int job_is_running(job *job);
+
+int job_has_stopped(job *job);
 
 #endif

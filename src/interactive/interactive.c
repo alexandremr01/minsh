@@ -49,7 +49,18 @@ void display_jobs(job *jobs){
     printf("Current jobs\n");
     int k = 0;
     for (job *j = jobs->next; j; j = j->next, k++) {
-        printf("[%d]: ", k);
+        printf("[%d] ", k);
+        switch(j->status){
+            case RUNNING:
+                printf("Running: ");
+                break;
+            case STOPPED:
+                printf("Stopped: ");
+                break;
+            case FINISHED:
+                printf("Finished: ");
+                break;
+        }
         for (int i=0; i<j->command_line->count; i++)
             printf("%s ", j->command_line->values[i]);
         printf("\n");

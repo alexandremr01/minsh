@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 #include "stringarr.h"
-
-typedef enum program_status { RUNNING, STOPPED, FINISHED } program_status;
+#include "status.h"
 
 typedef struct program {
     stringarr *args;
