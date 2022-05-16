@@ -19,4 +19,6 @@ job *new_job(struct program *program_head, int foreground);
 
 void free_jobs(job *job);
 
+job *new_job_head();
+
 #endif

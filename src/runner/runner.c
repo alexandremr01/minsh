@@ -97,6 +97,8 @@ void execute_programs(job *jobs, job *j) {
             p->status = FINISHED;
         }
 
+        free_jobs(j);
+
         int mypid = getpid();
         tcsetpgrp(STDIN_FILENO, mypid);
         tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
@@ -161,9 +163,34 @@ int execute(program *program, pid_t *pgid, int foreground) {
     return 0;
 }
 
+void notify_ended(job *j){
+    printf("Job ");
+    for (int i=0; i<j->command_line->count; i++)
+        printf("%s ", j->command_line->values[i]);
+    printf("ended \n");
+}
+
 void finish(job *jobs, pid_t pid) {
-    printf("Process %d ended \n", pid);
-    // TODO: find process
+    job *selected_job;
+    for (job *j = jobs->next; j; j = j->next){
+        for (program *p = j->program_head->next; p; p = p->next) {
+            if (p->pid == pid) {
+                p->status = FINISHED;
+                selected_job = j;
+            }
+        }
+    }
+
+    if (!job_is_running(selected_job->program_head)){
+        for (job *j = jobs; j; j = j->next) {
+            if (j->next == selected_job){
+                j->next = selected_job->next;
+                notify_ended(selected_job);
+                free_jobs(selected_job);
+                break;
+            }
+        }
+    }
 }
 
 void validate_running_programs(job *jobs){

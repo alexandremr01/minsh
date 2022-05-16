@@ -10,24 +10,20 @@
 #include "internal/internal.h"
 #include "types/job.h"
 
-void deallocate(stringarr *command_line, job *j) {
-    stringarr_free(command_line);
-//    free_jobs(j);
-}
-
 int main(){
     init_shell();
 
-    job *jobs = malloc(sizeof(job));
-    jobs->next = NULL;
+    job *jobs = new_job_head();
 
     while(1) {
+        validate_running_programs(jobs);
+
         stringarr *command_line = prompt_command();
         // in the case of an EOL
         if (command_line == NULL)
             break;
 
-        if(is_internal_command(command_line)){
+        if (is_internal_command(command_line)) {
             execute_internal_command(command_line, jobs);
             continue;
         }
@@ -36,17 +32,19 @@ int main(){
         job *j = parse(command_line);
         // syntax and semantic validation
         if (j == NULL || validate(j) != 0) {
-//            deallocate(command_line, j);
             continue;
         }
 
         // execution
         execute_programs(jobs, j);
 
-        // deallocate memory
-//        deallocate(command_line, j);
+    }
 
-        validate_running_programs(jobs);
+    // deallocate memory
+    for (job *j = jobs; j;){
+        job *p = j;
+        j = j->next;
+        free_jobs(p);
     }
 
     return 0;

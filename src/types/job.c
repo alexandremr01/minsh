@@ -9,10 +9,21 @@ job *new_job(struct program *program_head, int foreground){
     return new_job;
 }
 
+job *new_job_head(){
+    job *new_job = malloc(sizeof(job));
+    new_job->program_head = NULL;
+    new_job->foreground = 0;
+    new_job->next = NULL;
+    new_job->command_line = NULL;
+    return new_job;
+}
+
 void free_jobs(job *job){
     if (job == NULL)
         return;
-    free_programs(job->program_head);
-    free_jobs(job->next);
+    if (job->program_head != NULL)
+        free_programs(job->program_head);
+    if (job->command_line != NULL)
+        stringarr_free(job->command_line);
     free(job);
 }
