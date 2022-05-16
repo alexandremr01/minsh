@@ -210,10 +210,10 @@ void validate_running_programs(job *jobs){
     }
 }
 
-void resume_job(job *jobs, int foreground){
-    job *j = jobs->next;
+void resume_job(job *jobs, int foreground, job *j){
     if (j == NULL) {
         printf("No job to resume\n");
+        return;
     }
     j->status = RUNNING;
     for (program *p = j->program_head->next; p; p = p->next){
