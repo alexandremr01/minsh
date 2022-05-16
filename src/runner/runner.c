@@ -41,8 +41,8 @@ void wait_for_job(job *jobs, job *j){
             p = p->next;
         }
         if (p == NULL) continue;
-        if (WIFSTOPPED(child_status)) { p->status = STOPPED; }
-        if (WIFEXITED(child_status)) p->status = FINISHED;
+        if (WIFSTOPPED(child_status)) p->status = STOPPED;
+        if (WIFEXITED(child_status) || WIFSIGNALED(child_status)) p->status = FINISHED;
     }
 
     int mypid = getpid();
@@ -126,11 +126,11 @@ int execute(program *program, int foreground, job *j) {
         signal(SIGCHLD, SIG_DFL);
 
         pid_t pid = getpid();
-        if (j->gpid == -1){
-            j->gpid = pid;
-            if (foreground) tcsetpgrp (STDIN_FILENO, j->gpid);
+        if (j->pgid == -1){
+            j->pgid = pid;
+            if (foreground) tcsetpgrp (STDIN_FILENO, j->pgid);
         }
-        setpgid(j->gpid, pid);
+        setpgid(j->pgid, pid);
 
         int std_output = dup(STDOUT_FILENO);
         if (program->input != -1) {
@@ -151,11 +151,11 @@ int execute(program *program, int foreground, job *j) {
     } else { // parent process
         program->status = RUNNING;
         program->pid = cpid;
-        if (j->gpid == -1){
-            j->gpid = cpid;
-            if (foreground) tcsetpgrp (STDIN_FILENO, j->gpid);
+        if (j->pgid == -1){
+            j->pgid = cpid;
+            if (foreground) tcsetpgrp (STDIN_FILENO, j->pgid);
         }
-        setpgid(j->gpid, cpid);
+        setpgid(j->pgid, cpid);
 
         if (program->input != -1) close(program->input);
         if (program->output != -1) close(program->output);
@@ -221,7 +221,7 @@ void resume_job(job *jobs, int foreground, job *j){
         p->status = RUNNING;
     }
     if(foreground){
-        tcsetpgrp (STDIN_FILENO, j->gpid);
+        tcsetpgrp (STDIN_FILENO, j->pgid);
         wait_for_job(jobs, j);
     }
 }

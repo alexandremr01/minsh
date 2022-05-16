@@ -6,6 +6,7 @@ job *new_job(struct program *program_head, int foreground){
     new_job->program_head = program_head;
     new_job->foreground = foreground;
     new_job->next = NULL;
+    new_job->pgid = -1;
     return new_job;
 }
 

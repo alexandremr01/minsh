@@ -11,7 +11,7 @@ typedef struct job {
     stringarr *command_line;
 
     int foreground;
-    pid_t gpid;
+    pid_t pgid;
 
     struct job *next;
     program_status status;
