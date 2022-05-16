@@ -21,4 +21,8 @@ void free_jobs(job *job);
 
 job *new_job_head();
 
+int job_has_finished(job *job);
+
+int job_is_running(job *job);
+
 #endif

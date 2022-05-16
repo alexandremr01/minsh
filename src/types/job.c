@@ -27,3 +27,23 @@ void free_jobs(job *job){
         stringarr_free(job->command_line);
     free(job);
 }
+
+int job_has_finished(job *job){
+    program *p = job->program_head->next;
+    while (p != NULL){
+        if (p->status != FINISHED)
+            return 0;
+        p = p->next;
+    }
+    return 1;
+}
+
+int job_is_running(job *job){
+    program *p = job->program_head->next;
+    while (p != NULL){
+        if (p->status == RUNNING)
+            return 1;
+        p = p->next;
+    }
+    return 0;
+}

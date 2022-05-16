@@ -6,14 +6,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-#include <sys/stat.h>
 #include <termios.h>
 #include <signal.h>
 
-extern pid_t my_pid;
 extern struct termios shell_tmodes;
 
-int execute(program *program, pid_t *pgid, int foreground);
+int execute(program *program, int foreground, job *j);
 
 int validate(job *j) {
     program *p = j->program_head;
@@ -31,21 +29,39 @@ int validate(job *j) {
     return 0;
 }
 
-int job_is_running(program *programs_head){
-    program *p = programs_head->next;
-    while (p != NULL){
-//        printf("Seeing %d, %d\n", p->pid, p->status);
-        if (p->status == RUNNING)
-            return 1;
-        p = p->next;
+void wait_for_job(job *jobs, job *j){
+    int child_status;
+    while (job_is_running(j)) {
+        pid_t finished_pid = waitpid(-1, &child_status, WUNTRACED);
+        if (finished_pid == -1 && errno == ECHILD) continue;
+        program *p = j->program_head->next;
+        while (p!=NULL) {
+            if (p->pid == finished_pid)
+                break;
+            p = p->next;
+        }
+        if (p == NULL) continue;
+        if (WIFSTOPPED(child_status)) p->status = STOPPED;
+        if (WIFEXITED(child_status)) p->status = FINISHED;
     }
-    return 0;
+
+    int mypid = getpid();
+    tcsetpgrp(STDIN_FILENO, mypid);
+    tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
+
+    if(job_has_finished(j)) {
+        for (job *aux = jobs; aux; aux = aux->next){
+            if(aux->next == j){
+                aux->next = j->next;
+            }
+        }
+        free_jobs(j);
+    }
 }
 
 void execute_programs(job *jobs, job *j) {
     program *p = j->program_head->next;
     int foreground = j->foreground;
-    int pgid = -1;
     while (p != NULL) {
         if (p->next != NULL) {
             int pipefd[2];
@@ -74,7 +90,7 @@ void execute_programs(job *jobs, job *j) {
             p->input = fd;
         }
 
-        int result = execute(p, &pgid, foreground);
+        int result = execute(p, foreground, j);
         if (result != 0) {
             if (p->next != NULL && p->next->input != -1) close(p->next->input);
             return;
@@ -82,34 +98,15 @@ void execute_programs(job *jobs, job *j) {
         p = p->next;
     }
 
-    if (foreground){
-        int child_status;
-        while (job_is_running(j->program_head)) {
-            pid_t finished_pid = waitpid(-1, &child_status, WUNTRACED);
-            if (finished_pid == -1 && errno == ECHILD) continue;
-            program *p = j->program_head->next;
-            while (p!=NULL) {
-                if (p->pid == finished_pid)
-                    break;
-                p = p->next;
-            }
-            if (p == NULL) continue;
-            p->status = FINISHED;
-        }
+    j->next = jobs->next;
+    jobs->next = j;
 
-        free_jobs(j);
-
-        int mypid = getpid();
-        tcsetpgrp(STDIN_FILENO, mypid);
-        tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_tmodes);
-    } else {
-        j->next = jobs->next;
-        jobs->next = j;
-    }
-
+    if (foreground) wait_for_job(jobs, j);
 }
 
-int execute(program *program, pid_t *pgid, int foreground) {
+
+
+int execute(program *program, int foreground, job *j) {
     pid_t cpid = fork();
     char *newenviron[] = {NULL};
 
@@ -126,11 +123,11 @@ int execute(program *program, pid_t *pgid, int foreground) {
         signal(SIGCHLD, SIG_DFL);
 
         pid_t pid = getpid();
-        if (*pgid == -1){
-            *pgid = pid;
-            if (foreground) tcsetpgrp (STDIN_FILENO, *pgid);
+        if (j->gpid == -1){
+            j->gpid = pid;
+            if (foreground) tcsetpgrp (STDIN_FILENO, j->gpid);
         }
-        setpgid(*pgid, pid);
+        setpgid(j->gpid, pid);
 
         int std_output = dup(STDOUT_FILENO);
         if (program->input != -1) {
@@ -151,11 +148,11 @@ int execute(program *program, pid_t *pgid, int foreground) {
     } else { // parent process
         program->status = RUNNING;
         program->pid = cpid;
-        if (*pgid == -1){
-            *pgid = cpid;
-            if (foreground) tcsetpgrp (STDIN_FILENO, *pgid);
+        if (j->gpid == -1){
+            j->gpid = cpid;
+            if (foreground) tcsetpgrp (STDIN_FILENO, j->gpid);
         }
-        setpgid(*pgid, cpid);
+        setpgid(j->gpid, cpid);
 
         if (program->input != -1) close(program->input);
         if (program->output != -1) close(program->output);
@@ -181,7 +178,7 @@ void finish(job *jobs, pid_t pid) {
         }
     }
 
-    if (!job_is_running(selected_job->program_head)){
+    if (!job_is_running(selected_job)){
         for (job *j = jobs; j; j = j->next) {
             if (j->next == selected_job){
                 j->next = selected_job->next;
@@ -210,3 +207,17 @@ void validate_running_programs(job *jobs){
     }
 }
 
+void resume_job(job *jobs, int foreground){
+    job *j = jobs->next;
+    if (j == NULL) {
+        printf("No job to resume\n");
+    }
+    for (program *p = j->program_head->next; p; p = p->next){
+        kill(p->pid, SIGCONT);
+        p->status = RUNNING;
+    }
+    if(foreground){
+        tcsetpgrp (STDIN_FILENO, j->gpid);
+        wait_for_job(jobs, j);
+    }
+}

@@ -24,8 +24,10 @@ int main(){
             break;
 
         if (is_internal_command(command_line)) {
-            execute_internal_command(command_line, jobs);
-            continue;
+            int stop = execute_internal_command(command_line, jobs);
+            stringarr_free(command_line);
+            if (stop) break;
+            else continue;
         }
 
         // uses the array of strings to fill a linked list of programs

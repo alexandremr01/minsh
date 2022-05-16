@@ -9,7 +9,7 @@
 #include "../interactive/interactive.h"
 
 int is_internal_command(stringarr *command_line);
-void execute_internal_command(stringarr *command_line, job *jobs);
+int execute_internal_command(stringarr *command_line, job *jobs);
 
 #endif
 

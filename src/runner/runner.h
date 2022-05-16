@@ -12,4 +12,6 @@ int validate(job *j);
 
 void validate_running_programs(job *jobs);
 
+void resume_job(job *jobs, int foreground);
+
 #endif
