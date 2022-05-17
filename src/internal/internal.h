@@ -7,6 +7,8 @@
 #include "../types/stringarr.h"
 #include "../types/job.h"
 #include "../interactive/interactive.h"
+#include "../system/job_services.h"
+#include <ctype.h>
 
 int is_internal_command(stringarr *command_line);
 int execute_internal_command(stringarr *command_line, job *jobs);

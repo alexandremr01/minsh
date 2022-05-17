@@ -6,7 +6,7 @@ int is_terminator(int token_type);
 
 int parse_program(program *prg, lexer *lex);
 
-job* parse(stringarr *words) {
+job *parse(stringarr *words) {
     program *head = new_program();
     job *j = new_job(head, 1);
     j->command_line = words;
@@ -16,10 +16,10 @@ job* parse(stringarr *words) {
     lexer *lex = new_lexer(words);
     head->next = new_program();
     int result = parse_line(head->next, lex);
-    if (lex_current_token(lex) == COMMERCIAL_AND){
+    if (lex_current_token(lex) == COMMERCIAL_AND) {
         lex_next_token(lex);
         j->foreground = 0;
-        if (lex_current_token(lex) != EOL){
+        if (lex_current_token(lex) != EOL) {
             printf("Syntax error\n");
             return NULL;
         }
@@ -100,5 +100,5 @@ int parse_program(program *prg, lexer *lex) {
 }
 
 int is_terminator(int token_type) {
-    return token_type == PIPE || token_type == EOL || token_type == COMMERCIAL_AND ;
+    return token_type == PIPE || token_type == EOL || token_type == COMMERCIAL_AND;
 }

@@ -1,7 +1,7 @@
 #include "job.h"
 #include "program.h"
 
-job *new_job(struct program *program_head, int foreground){
+job *new_job(struct program *program_head, int foreground) {
     job *new_job = malloc(sizeof(job));
     new_job->program_head = program_head;
     new_job->foreground = foreground;
@@ -10,7 +10,7 @@ job *new_job(struct program *program_head, int foreground){
     return new_job;
 }
 
-job *new_job_head(){
+job *new_job_head() {
     job *new_job = malloc(sizeof(job));
     new_job->program_head = NULL;
     new_job->foreground = 0;
@@ -19,7 +19,7 @@ job *new_job_head(){
     return new_job;
 }
 
-void free_jobs(job *job){
+void free_jobs(job *job) {
     if (job == NULL)
         return;
     if (job->program_head != NULL)
@@ -29,9 +29,9 @@ void free_jobs(job *job){
     free(job);
 }
 
-int job_has_finished(job *job){
+int job_has_finished(job *job) {
     program *p = job->program_head->next;
-    while (p != NULL){
+    while (p != NULL) {
         if (p->status != FINISHED)
             return 0;
         p = p->next;
@@ -39,9 +39,9 @@ int job_has_finished(job *job){
     return 1;
 }
 
-int job_has_stopped(job *job){
+int job_has_stopped(job *job) {
     program *p = job->program_head->next;
-    while (p != NULL){
+    while (p != NULL) {
         if (p->status != STOPPED)
             return 0;
         p = p->next;
@@ -49,9 +49,9 @@ int job_has_stopped(job *job){
     return 1;
 }
 
-int job_is_running(job *job){
+int job_is_running(job *job) {
     program *p = job->program_head->next;
-    while (p != NULL){
+    while (p != NULL) {
         if (p->status == RUNNING)
             return 1;
         p = p->next;

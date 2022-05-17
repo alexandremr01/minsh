@@ -37,20 +37,19 @@ void init_shell() {
     // save terminal modes
     tcgetattr(STDIN_FILENO, &shell_tmodes);
 
-    int shell_pgid = getpid ();
-    if (setpgid (shell_pgid, shell_pgid) < 0)
-    {
-        perror ("Couldn't put the shell in its own process group");
-        exit (1);
+    int shell_pgid = getpid();
+    if (setpgid(shell_pgid, shell_pgid) < 0) {
+        perror("Couldn't put the shell in its own process group");
+        exit(1);
     }
 }
 
-void display_jobs(job *jobs){
+void display_jobs(job *jobs) {
     printf("Current jobs\n");
     int k = 0;
     for (job *j = jobs->next; j; j = j->next, k++) {
         printf("[%d] ", k);
-        switch(j->status){
+        switch (j->status) {
             case RUNNING:
                 printf("Running: ");
                 break;
@@ -61,8 +60,15 @@ void display_jobs(job *jobs){
                 printf("Finished: ");
                 break;
         }
-        for (int i=0; i<j->command_line->count; i++)
+        for (int i = 0; i < j->command_line->count; i++)
             printf("%s ", j->command_line->values[i]);
         printf("\n");
     }
+}
+
+void notify_ended(job *j) {
+    printf("Job ");
+    for (int i = 0; i < j->command_line->count; i++)
+        printf("%s ", j->command_line->values[i]);
+    printf("ended \n");
 }

@@ -5,7 +5,7 @@ BUILD     := ./bin
 
 SOURCEDIR := $(CURDIR)/src
 
-SOURCEFILES  := main.c interactive/interactive.c runner/runner.c \
+SOURCEFILES  := main.c interactive/interactive.c system/executor.c system/job_services.c \
         		types/program.c types/stringarr.c types/job.c \
         		parser/parser.c parser/lexer.c internal/internal.c
 

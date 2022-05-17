@@ -2,14 +2,28 @@
 
 A minimum shell developed for course CES-33 at ITA, SP, BR.
 
+# Code organization
+
+- `parser`: Parser and Lexer used to parse a command
+- `interactive`: Functions related to reading input and displaying information
+- `system`: System calls to execute and manage jobs. Interfaces with the OS.
+- `types`: Data structures program, job and stringarr
+
 # Features
 
 - Output redirecting (>)
 - Input redirecting (<)
 - Pipelining (|)
-- Signal handling for SIGINT
+- Running in background (&)
+- Signal handling (Ctrl+C, Ctrl+Z)
 
 Obs: Only the first member of a pipeline can redirect input. Only the last member can redirect output.
+
+## Internal commands
+
+- `jobs`: Lists running jobs
+- `bg [n]`: Takes job n to background, defaults to 0 
+- `fg [n]`: Brings job n to foreground, defaults to 0 
 
 # Preparing the environement
 
@@ -23,6 +37,7 @@ Build with `make debug` or `make release`. Run with `./bin/minsh`.
 
 ```sh
 /bin/ls | /usr/bin/sort -r | /usr/bin/tail -n 3 > outtest
+/bin/sleep 5 &
 ```
 
 # Testing

@@ -6,17 +6,17 @@
 
 #include "interactive/interactive.h"
 #include "parser/parser.h"
-#include "runner/runner.h"
+#include "system/executor.h"
 #include "internal/internal.h"
 #include "types/job.h"
 
-int main(){
+int main() {
     init_shell();
 
     job *jobs = new_job_head();
 
-    while(1) {
-        validate_running_programs(jobs);
+    while (1) {
+        check_running_programs(jobs);
 
         stringarr *command_line = prompt_command();
         // in the case of an EOL
@@ -38,12 +38,12 @@ int main(){
         }
 
         // execution
-        execute_programs(jobs, j);
+        execute_job(jobs, j);
 
     }
 
     // deallocate memory
-    for (job *j = jobs; j;){
+    for (job *j = jobs; j;) {
         job *p = j;
         j = j->next;
         free_jobs(p);

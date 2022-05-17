@@ -1,6 +1,4 @@
 #include "internal.h"
-#include "../runner/runner.h"
-#include <ctype.h>
 
 typedef int (*internal_executor)(stringarr *command_line, job *jobs); // function pointer
 
