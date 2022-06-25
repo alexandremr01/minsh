@@ -4,10 +4,11 @@ A minimum shell developed for course CES-33 at ITA, SP, BR.
 
 # Code organization
 
-- `parser`: Parser and Lexer used to parse a command
 - `interactive`: Functions related to reading input and displaying information
-- `system`: System calls to execute and manage jobs. Interfaces with the OS.
-- `types`: Data structures program, job and stringarr
+- `internal`: Define internal commands exit, jobs, fg and bg.
+- `parser`: Parser and Lexer used to parse a command
+- `system`: Interfaces with the OS - system calls to execute and manage jobs.
+- `types`: Data structures program, job and stringarr.
 
 # Features
 

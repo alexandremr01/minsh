@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "types/stringarr.h"
 #include "types/program.h"

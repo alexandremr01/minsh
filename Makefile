@@ -26,4 +26,4 @@ release: CFLAGS += -O2
 release: all
 
 clean:
-	-@rm -rvf $(BUILD)/*
+	-@rm -rvf $(BUILD)

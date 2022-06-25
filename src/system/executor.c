@@ -1,8 +1,6 @@
 #include "executor.h"
 #include "job_services.h"
 
-#include "../interactive/interactive.h"
-
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <stdio.h>
@@ -30,9 +28,9 @@ int execute_program(program *program, int foreground, job *j) {
         signal(SIGCHLD, SIG_DFL);
 
         pid_t pid = getpid();
-        if (j->pgid == -1){
+        if (j->pgid == -1) {
             j->pgid = pid;
-            if (foreground) tcsetpgrp (STDIN_FILENO, j->pgid);
+            if (foreground) tcsetpgrp(STDIN_FILENO, j->pgid);
         }
         setpgid(j->pgid, pid);
 
@@ -55,9 +53,9 @@ int execute_program(program *program, int foreground, job *j) {
     } else { // parent process
         program->status = RUNNING;
         program->pid = cpid;
-        if (j->pgid == -1){
+        if (j->pgid == -1) {
             j->pgid = cpid;
-            if (foreground) tcsetpgrp (STDIN_FILENO, j->pgid);
+            if (foreground) tcsetpgrp(STDIN_FILENO, j->pgid);
         }
         setpgid(j->pgid, cpid);
 

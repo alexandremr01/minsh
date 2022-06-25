@@ -10,7 +10,7 @@
 
 #include "interactive.h"
 
-#define WELCOME_MESSAGE "MINi SHell 0.1.0 by Alexandre Maranhao\n\n"
+#define WELCOME_MESSAGE "MINi SHell 0.2.0 by Alexandre Maranhao\n\n"
 
 struct termios shell_tmodes;
 
